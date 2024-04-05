@@ -17,6 +17,7 @@ using rail;
 using System.IO;
 using Terraria.Audio;
 using MackWheelers.Content.Items;
+using Steamworks;
 
 namespace MackWheelers
 {
@@ -24,6 +25,8 @@ namespace MackWheelers
     {
         private Mod mod => Mod;
         public Player player => Player;
+
+        const float DEFAULTwheelchairSlowdownValue = .076f;
 
         //public bool isCrippled = false;
         public bool isCrippled { get => player.HasBuff(ModContent.BuffType<Content.Buffs.PermanentlyCrippledDebuff>()); }
@@ -130,9 +133,8 @@ namespace MackWheelers
             {
                 if (isManuallyPushingSelf)
                 {
-                    //Main.NewText("player y velocity 1: " + player.velocity.Y);
-                    player.runAcceleration = 0f;
-                    player.maxRunSpeed = 0f;
+                    player.runAcceleration = 0f; //IMPORTANT the manual mode will not work if this is not here
+                    //player.maxRunSpeed = 0f;
                 }
             }
             base.PostUpdateRunSpeeds();
@@ -192,23 +194,34 @@ namespace MackWheelers
                 else //not being pushed, but on wheelchair
                 {
                     int groundTile = GetFloorTileID();
+                    player.runAcceleration = GetPlayerAccelleration(groundTile);
                     if (isManuallyPushingSelf)
                     {
                         int manualPushingTimerBase = 50;
                         //Main.NewText("player y velocity 2: "+ num3);
                         if (manualPushingTimer <= 0 && groundTile != -1)
                         {
+                            //Main.NewText(player.maxRunSpeed);
                             if (player.controlLeft)
                             {
-                                player.velocity += new Vector2(-5f, 0f);
+                                player.velocity += new Vector2(-5f * player.runAcceleration, 0f);
+                                //Main.NewText("velX = "+ player.velocity.X + "  and runaccel = "+ player.runAcceleration);
+                                KneecapSpeed();
                                 manualPushingTimer = manualPushingTimerBase;
                                 player.controlLeft = false;
                             }
                             else if (player.controlRight)
                             {
-                                player.velocity += new Vector2(5f, 0f);
+                                player.velocity += new Vector2(5f * player.runAcceleration, 0f);
+                                //Main.NewText("velX = " + player.velocity.X + "  and runaccel = " + player.runAcceleration);
+                                KneecapSpeed();
                                 manualPushingTimer = manualPushingTimerBase;
                             }
+
+                            //bro magiluninessence straight up caps your speed at 6 with the wheelchair wtf, even though i let it go as high as 9
+                            //
+                            //             WHY
+                            //
                         }
                     }
                     player.runSlowdown = GetPlayerSlowdown(groundTile);
@@ -223,12 +236,22 @@ namespace MackWheelers
                     {
                         player.velocity.X += player.runSlowdown;
                     }
-                    else
-                    {
-                        player.velocity.X = 0f;
-                    }
                 }
             }
+        }
+        public void KneecapSpeed()
+        {
+            //Main.NewText(player.maxRunSpeed);
+            float relativeRunspeed = player.maxRunSpeed + 4; //just to make wheelchairs faster on long periods of flat spaces, most noticeable on ice
+            if (player.velocity.X > relativeRunspeed)
+            {
+                player.velocity.X = relativeRunspeed;
+            }
+            else if (player.velocity.X < -relativeRunspeed)
+            {
+                player.velocity.X = -relativeRunspeed;
+            }
+            player.maxRunSpeed = relativeRunspeed;
         }
         public int GetFloorTileID()
         {
@@ -254,16 +277,51 @@ namespace MackWheelers
         }
         public float GetPlayerSlowdown(int ID)
         {
-            float returner = .076f;
-            if(ID != -1)
+            float returner = DEFAULTwheelchairSlowdownValue;
+            if (ID != -1)
             {
-                if (TileID.Sets.Conversion.Sand[ID])
+                if (TileID.Sets.Falling[ID])
                 {
                     returner *= 2f;
+                }
+                else if (TileID.Sets.Conversion.Snow[ID])
+                {
+                    returner *= 2f;
+                }
+                else if (ID == TileID.Mud || ID == TileID.Ash)
+                {
+                    returner *= 1.5f;
+                }
+                else if (TileID.Sets.Conversion.Ice[ID])
+                {
+                    returner *= .09f;
                 }
             }
 
             return returner;
+        }
+
+        public float GetPlayerAccelleration()
+        {
+            int id = GetFloorTileID();
+            return GetPlayerAccelleration(id);
+        }
+        public float GetPlayerAccelleration(int ID)
+        {
+            float accellerationCoefficient = 1;
+            if (ID != -1)
+            {
+                if (TileID.Sets.Conversion.Sand[ID] || TileID.Sets.Conversion.Snow[ID] || ID == TileID.Mud || ID == TileID.Ash)
+                {
+                    accellerationCoefficient *= 1f; //if this is 1 it does nothing, otherwise 
+                }
+                else if (TileID.Sets.Conversion.Ice[ID])
+                {
+                    accellerationCoefficient *= .35f;
+                }
+            }
+
+            return accellerationCoefficient;
         }
 
         public override void PostUpdate()
@@ -283,15 +341,6 @@ namespace MackWheelers
                 {
                     manualPushingTimer--;
                 }
-                /*
-                if (player.velocity.X > player.runSlowdown)
-                {
-                    player.velocity.X -= player.runSlowdown;
-                }
-                else if (player.velocity.X < -player.runSlowdown)
-                {
-                    player.velocity.X += player.runSlowdown;
-                }*/
             }
             base.PostUpdate();
         }

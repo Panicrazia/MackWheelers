@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "5c9iDzFmQNuqHVhMBw7/hQ/tKzjjDizBYyQSuQDRiRJ3ab3aXnQw7k3yjLzkfxbqPVTL0YArZDlyj6Hp/corgg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\MackWheelers.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\panic\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
+  ],
+  "logs": []
+}

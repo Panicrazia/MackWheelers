@@ -1,0 +1,32 @@
+# This file will automatically update with entries for new content after a build and reload
+
+Items: {
+	WheelchairItem: {
+		DisplayName: Wheelchair Item
+		Tooltip: Ride a wheelchair, lets people push you
+	}
+
+	DebugMjolnir: {
+		DisplayName: Debug Mjolnir
+		Tooltip: ""
+	}
+
+	A796KiloGramBoulder: {
+		DisplayName: 796 Kilo Gram Boulder
+		Tooltip: Break your legs
+	}
+}
+
+Buffs: {
+	WheelchairMountBuff: {
+		Description: Riding a wheelchair
+		DisplayName: Wheelchair Mount Buff
+	}
+
+	PermanentlyCrippledDebuff: {
+		DisplayName: Permanently Crippled
+		Description: You cannot move without assistance
+	}
+}
+
+Keybinds.WheelchairGrapple.DisplayName: Wheelchair Grapple

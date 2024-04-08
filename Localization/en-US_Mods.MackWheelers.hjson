@@ -15,6 +15,16 @@ Items: {
 		DisplayName: 796 Kilo Gram Boulder
 		Tooltip: Break your legs
 	}
+
+	WheelchairWheelAcc: {
+		DisplayName: Wheelchair Wheel Acc
+		Tooltip: ""
+	}
+
+	WheelchairWorkshop: {
+		DisplayName: Wheelchair Workshop
+		Tooltip: ""
+	}
 }
 
 Buffs: {
@@ -30,3 +40,4 @@ Buffs: {
 }
 
 Keybinds.WheelchairGrapple.DisplayName: Wheelchair Grapple
+Tiles.WheelchairWorkshop.MapEntry: Wheelchair Workshop

@@ -72,7 +72,7 @@ namespace MackWheelers
 
         public override void SetControls()
         {
-            if (player.controlMount)
+            if (isCrippled && player.controlMount)
             {
                 player.RemoveAllGrapplingHooks();
             }
@@ -382,14 +382,16 @@ namespace MackWheelers
                 //Player.AddBuff(buff, 600);
 
                 //Main.NewText(triggersSet.KeyStatus.TryAdd("Grapple", false));
-
-                if (player.mount._data.Minecart == true)
+                if(player.mount._data != null)
                 {
-                    player.mount._data.Minecart = false;
-                }
-                else
-                {
-                    player.mount._data.Minecart = true;
+                    if (player.mount._data.Minecart == true)
+                    {
+                        player.mount._data.Minecart = false;
+                    }
+                    else
+                    {
+                        player.mount._data.Minecart = true;
+                    }
                 }
 
                 Main.NewText("Wheelchair grapplehook go");

@@ -45,8 +45,8 @@ namespace MackWheelers.Common.UI
          */
         public const float ITEMSLOTSPACEHORIZONTAL = ITEMSLOTSIZE / 8f;
         public const float ITEMSLOTSPACEVERTICAL = ITEMSLOTSIZE / 3.5f;
-        public const float WHEELCHAIRWORKSHOPWIDTH = 500f;
-        public const float WHEELCHAIRWORKSHOPHEIGHT = 500f;
+        public const float WHEELCHAIRWORKSHOPWIDTH = ITEMSLOTSIZE * 8;
+        public const float WHEELCHAIRWORKSHOPHEIGHT = ITEMSLOTSIZE * 5;
         public const float WHEELCHAIRWORKSHOPPADDING = 10f; //TODO: IMPLIMET THEIS FUKIN PADDING FUCK UI
     }
 

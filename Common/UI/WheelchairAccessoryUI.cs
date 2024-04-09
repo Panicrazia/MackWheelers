@@ -44,10 +44,10 @@ namespace MackWheelers.Common.UI
          * 
          */
         public const float ITEMSLOTSPACEHORIZONTAL = ITEMSLOTSIZE / 8f;
-        public const float ITEMSLOTSPACEVERTICAL = ITEMSLOTSIZE / 3.5f;
-        public const float WHEELCHAIRWORKSHOPWIDTH = ITEMSLOTSIZE * 8;
-        public const float WHEELCHAIRWORKSHOPHEIGHT = ITEMSLOTSIZE * 5;
-        public const float WHEELCHAIRWORKSHOPPADDING = 10f; //TODO: IMPLIMET THEIS FUKIN PADDING FUCK UI
+        public const float ITEMSLOTSPACEVERTICAL = ITEMSLOTSIZE / 4f;
+        public const float WHEELCHAIRWORKSHOPPADDING = ITEMSLOTSIZE / 4f;
+        public const float WHEELCHAIRWORKSHOPWIDTH = (ITEMSLOTSIZE * 7f) + (ITEMSLOTSPACEHORIZONTAL * 6f) + (WHEELCHAIRWORKSHOPPADDING * 2f);
+        public const float WHEELCHAIRWORKSHOPHEIGHT = (ITEMSLOTSIZE * 4f) + (ITEMSLOTSPACEVERTICAL * 3f) + (WHEELCHAIRWORKSHOPPADDING * 2f);
     }
 
     internal class WheelchairAccessoryUI : UIState
@@ -207,11 +207,11 @@ namespace MackWheelers.Common.UI
         {
             if(left)
             {
-                AltSetRectangle(this, 0f, (count * (UIConstants.ITEMSLOTSIZE + UIConstants.ITEMSLOTSPACEVERTICAL)), 100f, 100f);
+                AltSetRectangle(this, UIConstants.WHEELCHAIRWORKSHOPPADDING, UIConstants.WHEELCHAIRWORKSHOPPADDING + (count * (UIConstants.ITEMSLOTSIZE + UIConstants.ITEMSLOTSPACEVERTICAL)), 100f, 100f);
             }
             else
             {
-                AltSetRectangleRight(this, 0f, (count * (UIConstants.ITEMSLOTSIZE + UIConstants.ITEMSLOTSPACEVERTICAL)), 100f, 100f);
+                AltSetRectangleRight(this, UIConstants.WHEELCHAIRWORKSHOPPADDING, UIConstants.WHEELCHAIRWORKSHOPPADDING + (count * (UIConstants.ITEMSLOTSIZE + UIConstants.ITEMSLOTSPACEVERTICAL)), 100f, 100f);
             }
             leftOriented = left;
             uiElement.Append(this);
@@ -248,10 +248,12 @@ namespace MackWheelers.Common.UI
             if (leftOriented)
             {
                 SetRectangle(thing, count * (UIConstants.ITEMSLOTSIZE + UIConstants.ITEMSLOTSPACEHORIZONTAL), 0f, UIConstants.ITEMSLOTSIZE, UIConstants.ITEMSLOTSIZE);
+                thing.MarginLeft = 0f;
             }
             else
             {
                 SetRectangleRight(thing, count * (UIConstants.ITEMSLOTSIZE + UIConstants.ITEMSLOTSPACEHORIZONTAL), 0f, UIConstants.ITEMSLOTSIZE, UIConstants.ITEMSLOTSIZE);
+                thing.MarginLeft = 1f;
             }
             this.Append(thing);
         }

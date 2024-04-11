@@ -9,7 +9,7 @@ namespace MackWheelers.Content.Items
 {
     internal class BaseWheelchairSidearmAcc : ModItem
     {
-        public WheelchairAccessoryTypeEnum enumType = WheelchairAccessoryTypeEnum.Box;
+        public WheelchairAccessoryTypeEnum enumType = WheelchairAccessoryTypeEnum.Sidearm;
         
 
         public WheelchairAccessoryTypeEnum GetAccType()

@@ -81,6 +81,8 @@ namespace MackWheelers.Common.UI
             SetWheelchairItemSlot(WheelchairSlot);
             wheelchairAccessoryWorkshop.Append(WheelchairSlot);
 
+            WheelchairSlot.Recalculate();    //hopefully this fixes the initial position bug, otherwise look into initialize and OnInitialize
+            
             /*
             //close button
             Asset<Texture2D> buttonDeleteTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/ButtonDelete");

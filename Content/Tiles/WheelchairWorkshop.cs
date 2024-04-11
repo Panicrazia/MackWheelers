@@ -83,18 +83,29 @@ namespace MackWheelers.Content.Tiles
             int top = j - Main.tile[i, j].TileFrameY / 18;
             */
 
-            Main.playerInventory = false;
-            player.chest = -1;
-            Recipe.FindRecipes();
-            player.SetTalkNPC(-1);
-            Main.npcChatCornerItem = 0;
-            Main.npcChatText = "";
 
             //Main.interactedDresserTopLeftX = left;
             //Main.interactedDresserTopLeftY = top;
 
             Main.NewText("tried to open");
-            ModContent.GetInstance<WheelchairUISystem>().ToggleUI();
+            if (ModContent.GetInstance<WheelchairUISystem>().ToggleUI())
+            {
+                Main.playerInventory = false;
+                player.chest = -1;
+                Recipe.FindRecipes();
+                player.SetTalkNPC(-1);
+                Main.npcChatCornerItem = 0;
+                Main.npcChatText = "";
+            }
+            else
+            {
+                Main.playerInventory = true;
+                player.chest = -1;
+                Recipe.FindRecipes();
+                player.SetTalkNPC(-1);
+                Main.npcChatCornerItem = 0;
+                Main.npcChatText = "";
+            }
 
 
             return true;

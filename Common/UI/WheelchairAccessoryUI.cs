@@ -19,11 +19,15 @@ using System.Collections;
 using Terraria.GameContent.Achievements;
 using Humanizer;
 using Terraria.ModLoader.UI;
+using Microsoft.Xna.Framework.Input;
+using Terraria.GameContent.Events;
+using MackWheelers.Content.Items.Mounts;
 
 namespace MackWheelers.Common.UI
 {
     public enum WheelchairType
     {
+        None,
         Wooden,
         Electric,
         Reinforced,
@@ -53,14 +57,13 @@ namespace MackWheelers.Common.UI
     internal class WheelchairAccessoryUI : UIState
     {
         public DraggableUIPanel wheelchairAccessoryWorkshop;
-        public WheelchairType wheelchairType;
+        public WheelchairType wheelchairType = WheelchairType.None;
 
         public Dictionary<WheelchairAccessoryTypeEnum, bool> specialWheelchairUpgrades = new Dictionary<WheelchairAccessoryTypeEnum, bool>();
         public Dictionary<WheelchairAccessoryTypeEnum, UIItemSlotSection> ItemSlotSections = new Dictionary<WheelchairAccessoryTypeEnum, UIItemSlotSection>();
         public Dictionary<WheelchairAccessoryTypeEnum, List<WheelchairAccessoryItemSlotWrapper>> ItemSlots = new Dictionary<WheelchairAccessoryTypeEnum, List<WheelchairAccessoryItemSlotWrapper>>();
-        public Dictionary<WheelchairAccessoryTypeEnum, int> ItemSlotsMaxs = new Dictionary<WheelchairAccessoryTypeEnum, int>();
         
-        public WheelchairAccessoryItemSlotWrapper currentSlot;
+        public WheelchairAccessoryItemSlotWrapper WheelchairSlot;
 
         
         public override void OnInitialize()
@@ -68,17 +71,17 @@ namespace MackWheelers.Common.UI
             wheelchairAccessoryWorkshop = new DraggableUIPanel();
             wheelchairAccessoryWorkshop.SetPadding(0); //lol. lmao.
 
-            SetSelfRectangle(wheelchairAccessoryWorkshop, left: 100f, top: 100f, width: UIConstants.WHEELCHAIRWORKSHOPWIDTH, height: UIConstants.WHEELCHAIRWORKSHOPHEIGHT);
+            SetSelfRectangle(wheelchairAccessoryWorkshop, Main.screenWidth * .5f, Main.screenHeight * .5f, width: UIConstants.WHEELCHAIRWORKSHOPWIDTH, height: UIConstants.WHEELCHAIRWORKSHOPHEIGHT);
             wheelchairAccessoryWorkshop.BorderColor = Color.White;
             wheelchairAccessoryWorkshop.BackgroundColor = new Color(73, 94, 171);
 
-            /*
-            //wheelchair image
-            Asset<Texture2D> buttonPlayTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/ButtonPlay");
-            UIImage playButton = new UIImage(buttonPlayTexture);
-            SetSelfRectangle(playButton, left: 110f, top: 10f, width: 22f, height: 22f);
-            wheelchairAccessoryWorkshop.Append(playButton);
 
+            //wheelchair itemslot
+            WheelchairSlot = new WheelchairAccessoryItemSlotWrapper(WheelchairAccessoryTypeEnum.Wheelchair, true, 1f);
+            SetWheelchairItemSlot(WheelchairSlot);
+            wheelchairAccessoryWorkshop.Append(WheelchairSlot);
+
+            /*
             //close button
             Asset<Texture2D> buttonDeleteTexture = ModContent.Request<Texture2D>("Terraria/Images/UI/ButtonDelete");
             UIImageButton closeButton = new UIImageButton(buttonDeleteTexture);
@@ -92,10 +95,51 @@ namespace MackWheelers.Common.UI
 
             */
 
-            setUpSections();
+            SetUpSections();
 
-            wheelchairType = WheelchairType.Advanced;
+            CreateSections();
 
+            CreateSections2();
+
+            //WheelchairSlot = new WheelchairAccessoryItemSlotWrapper(WheelchairAccessoryTypeEnum.Wheels);
+            //SetSelfRectangle(WheelchairSlot, 15f, 20f, UIConstants.ITEMSLOTSIZE, UIConstants.ITEMSLOTSIZE);
+
+            //See if changing the width here is possible
+
+
+            Append(wheelchairAccessoryWorkshop);
+        }
+
+        public void SetWheelchairType(WheelchairType newType)
+        {
+            Main.NewText("old wheelchairType: " + wheelchairType);
+            wheelchairType = newType;
+            Main.NewText("new wheelchairType: " + wheelchairType);
+            ReDoItemSlots();
+        }
+
+        public void ReDoItemSlots()
+        {
+            WipeSections();
+            CreateSections();
+            CreateSections2();
+        }
+
+        public void WipeSections()
+        {
+            //this should remove all slots that arent the base wheelchair slot
+            foreach (KeyValuePair<WheelchairAccessoryTypeEnum, UIItemSlotSection> entry in ItemSlotSections)
+            {
+                entry.Value.RemoveAllItemSlots();
+            }
+            foreach (KeyValuePair<WheelchairAccessoryTypeEnum, List<WheelchairAccessoryItemSlotWrapper>> entry in ItemSlots)
+            {
+                entry.Value.Clear();
+            }
+        }
+
+        public void CreateSections()
+        {
             switch (wheelchairType)
             {
                 case (WheelchairType.Advanced):
@@ -118,22 +162,48 @@ namespace MackWheelers.Common.UI
                     GetNewSlot(WheelchairAccessoryTypeEnum.Wheels);
                     GetNewSlot(WheelchairAccessoryTypeEnum.Shoulder);
                     break;
+                default:
+                    break;
             }
+        }
+        public void CreateSections2()
+        {
             foreach (KeyValuePair<WheelchairAccessoryTypeEnum, bool> entry in specialWheelchairUpgrades)
             {
                 //TODO: do
             }
-
-            //currentSlot = new WheelchairAccessoryItemSlotWrapper(WheelchairAccessoryTypeEnum.Wheels);
-            //SetSelfRectangle(currentSlot, 15f, 20f, UIConstants.ITEMSLOTSIZE, UIConstants.ITEMSLOTSIZE);
-
-            //See if changing the width here is possible
-
-
-            Append(wheelchairAccessoryWorkshop);
         }
 
-        private void setUpSections()
+        public void PopulateSections(Dictionary<WheelchairAccessoryTypeEnum, List<Item>> itemDict)
+        {
+            /*
+            foreach (KeyValuePair<WheelchairAccessoryTypeEnum, List<WheelchairAccessoryItemSlotWrapper>> entry in ItemSlots)
+            {
+                foreach (var item in entry.Value.Select((value, i) => new { i, value }))
+                {
+                    //assuming this goes from low index to high then this should be fine
+                    var value = item.value;
+                    var index = item.i;
+                }
+                //shallow copy should be fine right???
+                ItemSlots = itemDict
+            }
+            */
+
+            //i dunno if this is a shallow copy or not but if it works idk
+            foreach (KeyValuePair<WheelchairAccessoryTypeEnum, List<Item>> entry in itemDict)
+            {
+                foreach (var item in entry.Value.Select((value, i) => new { i, value }))
+                {
+                    var value = item.value;
+                    var index = item.i;
+
+                    ItemSlots[entry.Key][index].SetItem(value);
+                }
+            }
+        }
+
+        private void SetUpSections()
         {
             ItemSlotSections.Add(WheelchairAccessoryTypeEnum.Wheels, new UIItemSlotSection(wheelchairAccessoryWorkshop, true, 0));
             ItemSlotSections.Add(WheelchairAccessoryTypeEnum.Back, new UIItemSlotSection(wheelchairAccessoryWorkshop, true, 1));
@@ -153,28 +223,19 @@ namespace MackWheelers.Common.UI
             ItemSlots.Add(WheelchairAccessoryTypeEnum.Back, new List<WheelchairAccessoryItemSlotWrapper>());
             ItemSlots.Add(WheelchairAccessoryTypeEnum.Engine, new List<WheelchairAccessoryItemSlotWrapper>());
 
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Wheels, 3);
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Box, 3);
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Sidearm, 2);
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Shoulder, 2);
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Hull, 2);
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Undercarriage, 2);
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Back, 2);
-            ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Engine, 1);
-
             specialWheelchairUpgrades.Add(WheelchairAccessoryTypeEnum.Wheels, false);
         }
 
         private WheelchairAccessoryItemSlotWrapper GetNewSlot(WheelchairAccessoryTypeEnum type)
         {
             List<WheelchairAccessoryItemSlotWrapper> slots = ItemSlots[type];
-            if(slots != null && slots.Count <= ItemSlotsMaxs[type])
+            if (slots != null && slots.Count <= WheelchairAccMaxValues.ItemSlotsMaxs[type])
             {
                 bool left = ItemSlotSections[type].leftOriented;
-                currentSlot = new WheelchairAccessoryItemSlotWrapper(type, left);
-                ItemSlotSections[type].AddItemSlot(currentSlot, slots.Count);
-                slots.Add(currentSlot);
-                return currentSlot;
+                WheelchairAccessoryItemSlotWrapper newSlot = new WheelchairAccessoryItemSlotWrapper(type, left);
+                ItemSlotSections[type].AddItemSlot(newSlot, slots.Count);
+                slots.Add(newSlot);
+                return newSlot;
             }
             else
             {
@@ -182,6 +243,14 @@ namespace MackWheelers.Common.UI
                 Main.NewText("yeah i dunno bruv go fuk urself lmao");
                 return null;
             }
+        }
+
+        protected void SetWheelchairItemSlot(UIElement uiElement)
+        {
+            uiElement.Left.Set((UIConstants.WHEELCHAIRWORKSHOPWIDTH *.5f) - (UIConstants.ITEMSLOTREALSIZE * .5f), 0f);
+            uiElement.Top.Set((UIConstants.WHEELCHAIRWORKSHOPHEIGHT *.5f) - (UIConstants.ITEMSLOTREALSIZE * .5f), 0f);
+            uiElement.Width.Set(UIConstants.ITEMSLOTREALSIZE, 0f);
+            uiElement.Height.Set(UIConstants.ITEMSLOTREALSIZE, 0f);
         }
 
         protected void SetSelfRectangle(UIElement uiElement, float left, float top, float width, float height)
@@ -198,6 +267,26 @@ namespace MackWheelers.Common.UI
             ModContent.GetInstance<WheelchairUISystem>().HideMyUI();
         }
 
+        /// <summary>
+        /// adds the item to the wheelchair item
+        /// </summary>
+        /// <param name="item"></param>
+        public void AddItem(Item item)
+        {
+            BaseWheelchairItem wheelchair = WheelchairSlot.GetItem().ModItem as BaseWheelchairItem;
+
+            wheelchair.AddItem(item);
+        }
+
+        /// <summary>
+        /// removes the item from the wheelchair item
+        /// </summary>
+        public void RemoveItem(Item item)
+        {
+            BaseWheelchairItem wheelchair = WheelchairSlot.GetItem().ModItem as BaseWheelchairItem;
+
+            wheelchair.RemoveItem(item);
+        }
     }
 
     internal class UIItemSlotSection : UIElement
@@ -258,6 +347,11 @@ namespace MackWheelers.Common.UI
             this.Append(thing);
         }
 
+        public void RemoveAllItemSlots()
+        {
+            this.RemoveAllChildren();
+        }
+
         public List<Item> GetItemsInside()
         {
             //TODO: have these be saved into the wheelchair
@@ -296,6 +390,7 @@ namespace MackWheelers.Common.UI
             uiElement.Width.Set(width, 0f);
             uiElement.Height.Set(height, 0f);
         }
+
         /*
         public void AltSetRectangleRightOld(UIElement uiElement, float left, float top, float width, float height)
         {

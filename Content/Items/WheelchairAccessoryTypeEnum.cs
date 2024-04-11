@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MackWheelers.Content.Items
 {
-    internal enum WheelchairAccessoryTypeEnum
+    public enum WheelchairAccessoryTypeEnum
     {
+        Wheelchair,
         Wheels,
         Box,
         Sidearm,

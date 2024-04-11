@@ -13,6 +13,7 @@
     <None Remove="Content\Buffs\PermanentlyCrippledDebuffAlt.png" />
     <None Remove="Content\Items\a796KiloGramBoulder.png" />
     <None Remove="Content\Items\DebugMjolnir.png" />
+    <None Remove="Content\Items\Mounts\BaseWheelchairItem.png" />
     <None Remove="Content\Items\WheelchairWheelAcc.png" />
   </ItemGroup>
   <ItemGroup>

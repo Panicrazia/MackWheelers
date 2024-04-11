@@ -2,11 +2,25 @@ using System.IO;
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
+using MackWheelers.Content.Items;
 
 namespace MackWheelers
 {
 	public class MackWheelers : Mod
 	{
+        public override void Load()
+        {
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Wheels, 3);
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Box, 3);
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Sidearm, 2);
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Shoulder, 2);
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Hull, 2);
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Undercarriage, 2);
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Back, 2);
+            WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Engine, 1);
+            base.Load();
+        }
+
 
         internal enum MessageType : byte
         {

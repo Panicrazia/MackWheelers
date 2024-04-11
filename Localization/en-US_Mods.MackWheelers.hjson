@@ -25,6 +25,11 @@ Items: {
 		DisplayName: Wheelchair Workshop
 		Tooltip: ""
 	}
+
+	BaseWheelchairItem: {
+		DisplayName: Base Wheelchair Item
+		Tooltip: ""
+	}
 }
 
 Buffs: {

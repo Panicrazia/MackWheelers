@@ -7,8 +7,19 @@ using Terraria.ModLoader;
 
 namespace MackWheelers.Content.Items
 {
+    public static class WheelchairAccMaxValues
+    {
+        public static Dictionary<WheelchairAccessoryTypeEnum, int> ItemSlotsMaxs = new Dictionary<WheelchairAccessoryTypeEnum, int>();
+    }
     internal class WheelchairWheelAcc : ModItem
     {
         public WheelchairAccessoryTypeEnum enumType = WheelchairAccessoryTypeEnum.Wheels;
+
+
+        public WheelchairAccessoryTypeEnum GetAccType()
+        {
+            return enumType;
+        }
     }
+
 }

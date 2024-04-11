@@ -17,15 +17,21 @@ namespace MackWheelers.Common.UI
         internal WheelchairAccessoryUI wheelchairUI;
 
         // These two methods will set the state of our custom UI, causing it to show or hide
-        public void ToggleUI()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>true if the UI was open beforehand</returns>
+        public bool ToggleUI()
         {
             if(wheelchairWorkshopUIinterface?.CurrentState != null)
             {
                 HideMyUI();
+                return true;
             }
             else
             {
                 ShowMyUI();
+                return false;
             }
 
         }

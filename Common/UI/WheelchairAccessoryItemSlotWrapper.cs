@@ -123,9 +123,9 @@ namespace MackWheelers.Common.UI
 
         public bool VerifyItem(Item item)
         {
-            if (item.ModItem is WheelchairWheelAcc)
+            if (item.ModItem is BaseWheelchairAcc)
             {
-                if (accType == (item.ModItem as WheelchairWheelAcc).GetAccType())
+                if (accType == (item.ModItem as BaseWheelchairAcc).GetAccType())
                 {
                     return true;
                 }

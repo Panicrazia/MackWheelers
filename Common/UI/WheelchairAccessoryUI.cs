@@ -81,7 +81,7 @@ namespace MackWheelers.Common.UI
             SetWheelchairItemSlot(WheelchairSlot);
             wheelchairAccessoryWorkshop.Append(WheelchairSlot);
 
-            WheelchairSlot.Recalculate();    //hopefully this fixes the initial position bug, otherwise look into initialize and OnInitialize
+            WheelchairSlot.Initialize();    //hopefully this fixes the initial position bug, otherwise look into initialize and OnInitialize
             
             /*
             //close button

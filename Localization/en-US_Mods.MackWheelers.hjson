@@ -30,6 +30,66 @@ Items: {
 		DisplayName: Base Wheelchair Item
 		Tooltip: ""
 	}
+
+	BaseWheelchairBackAcc: {
+		DisplayName: Base Wheelchair Back Acc
+		Tooltip: ""
+	}
+
+	BaseWheelchairBoxAcc: {
+		DisplayName: Base Wheelchair Box Acc
+		Tooltip: ""
+	}
+
+	BaseWheelchairEngineAcc: {
+		DisplayName: Base Wheelchair Engine Acc
+		Tooltip: ""
+	}
+
+	BaseWheelchairHullAcc: {
+		DisplayName: Base Wheelchair Hull Acc
+		Tooltip: ""
+	}
+
+	BaseWheelchairShoulderAcc: {
+		DisplayName: Base Wheelchair Shoulder Acc
+		Tooltip: ""
+	}
+
+	BaseWheelchairSidearmAcc: {
+		DisplayName: Base Wheelchair Sidearm Acc
+		Tooltip: ""
+	}
+
+	BaseWheelchairUndercarriageAcc: {
+		DisplayName: Base Wheelchair Undercarriage Acc
+		Tooltip: ""
+	}
+
+	AdvancedWheelchairItem: {
+		DisplayName: Advanced Wheelchair Item
+		Tooltip: ""
+	}
+
+	ElectricWheelchairItem: {
+		DisplayName: Electric Wheelchair Item
+		Tooltip: ""
+	}
+
+	ReinforcedWheelchairItem: {
+		DisplayName: Reinforced Wheelchair Item
+		Tooltip: ""
+	}
+
+	WoodenWheelchairItem: {
+		DisplayName: Wooden Wheelchair Item
+		Tooltip: ""
+	}
+
+	BaseWheelchairWheelAcc: {
+		DisplayName: Base Wheelchair Wheel Acc
+		Tooltip: ""
+	}
 }
 
 Buffs: {

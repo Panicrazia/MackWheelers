@@ -50,13 +50,14 @@ namespace MackWheelers.Content.Items.Mounts
 
         public bool AddItem(Item item)
         {
-            if(item.ModItem.Type != ModContent.ItemType<WheelchairWheelAcc>()) 
+            //if(item.ModItem.Type != ModContent.ItemType<BaseWheelchairAcc>())
+            if (!(item.ModItem is BaseWheelchairAcc))
             {
                 return false;
             }
             else
             {
-                WheelchairAccessoryTypeEnum accType = (item.ModItem as WheelchairWheelAcc).GetAccType();
+                WheelchairAccessoryTypeEnum accType = (item.ModItem as BaseWheelchairAcc).GetAccType();
                 if (wheelchairAccessoryList[accType].Count >= WheelchairAccMaxValues.ItemSlotsMaxs[accType])
                 {
                     Main.NewText("tried to add a slot but there was no space, in basewheelchairitem");
@@ -78,13 +79,13 @@ namespace MackWheelers.Content.Items.Mounts
             //go through the list and find the item, then remove it
 
             /*
-            if (item.ModItem.Type != ModContent.ItemType<WheelchairWheelAcc>())
+            if (item.ModItem.Type != ModContent.ItemType<BaseWheelchairAcc>())
             {
                 return false;
             }
             else
             {
-                WheelchairAccessoryTypeEnum accType = (item.ModItem as WheelchairWheelAcc).GetAccType();
+                WheelchairAccessoryTypeEnum accType = (item.ModItem as BaseWheelchairAcc).GetAccType();
                 if (wheelchairAccessoryList[accType].Count >= WheelchairAccMaxValues.ItemSlotsMaxs[accType])
                 {
                     return false;

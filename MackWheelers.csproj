@@ -17,20 +17,6 @@
     <None Remove="Content\Items\WheelchairWheelAcc.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\Items\BaseWheelchairBackAcc.cs" />
-    <None Include="Content\Items\BaseWheelchairBoxAcc.cs" />
-    <None Include="Content\Items\BaseWheelchairEngineAcc.cs" />
-    <None Include="Content\Items\BaseWheelchairHullAcc.cs" />
-    <None Include="Content\Items\BaseWheelchairShoulderAcc.cs" />
-    <None Include="Content\Items\BaseWheelchairSidearmAcc.cs" />
-    <None Include="Content\Items\BaseWheelchairUndercarriageAcc.cs" />
-    <None Include="Content\Items\BaseWheelchairWheelAcc.cs" />
-    <None Include="Content\Items\Mounts\AdvancedWheelchairItem.cs" />
-    <None Include="Content\Items\Mounts\ElectricWheelchairItem.cs" />
-    <None Include="Content\Items\Mounts\ReinforcedWheelchairItem.cs" />
-    <None Include="Content\Items\Mounts\WoodenWheelchairItem.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
 </Project>

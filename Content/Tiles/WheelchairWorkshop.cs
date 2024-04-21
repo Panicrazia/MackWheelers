@@ -87,7 +87,7 @@ namespace MackWheelers.Content.Tiles
             //Main.interactedDresserTopLeftX = left;
             //Main.interactedDresserTopLeftY = top;
 
-            Main.NewText("tried to open");
+            //Main.NewText("tried to open");
             if (ModContent.GetInstance<WheelchairUISystem>().ToggleUI())
             {
                 Main.playerInventory = false;
@@ -105,6 +105,7 @@ namespace MackWheelers.Content.Tiles
                 player.SetTalkNPC(-1);
                 Main.npcChatCornerItem = 0;
                 Main.npcChatText = "";
+                ModContent.GetInstance<WheelchairUISystem>().wheelchairAccChange();
             }
 
 

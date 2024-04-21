@@ -90,6 +90,16 @@ Items: {
 		DisplayName: Base Wheelchair Wheel Acc
 		Tooltip: ""
 	}
+
+	PrehmWheelGrapple1: {
+		DisplayName: Prehm Wheel Grapple1
+		Tooltip: ""
+	}
+
+	PrehmWheelGrapple1Item: {
+		DisplayName: Prehm Wheel Grapple1 Item
+		Tooltip: ""
+	}
 }
 
 Buffs: {
@@ -106,3 +116,4 @@ Buffs: {
 
 Keybinds.WheelchairGrapple.DisplayName: Wheelchair Grapple
 Tiles.WheelchairWorkshop.MapEntry: Wheelchair Workshop
+Projectiles.WheelchairGrapple1.DisplayName: Wheelchair Grapple1

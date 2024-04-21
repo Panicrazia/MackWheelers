@@ -12,11 +12,60 @@ using Terraria.ModLoader.IO;
 using MackWheelers.Common.UI;
 using static System.Formats.Asn1.AsnWriter;
 using System.Collections;
+using System.IO;
+using MackWheelers.Content.Items.WheelchairAccessories;
 
 namespace MackWheelers.Content.Items.Mounts
 {
-    internal class BaseWheelchairItem : ModItem
+    /*
+    public class WheelchairAccData : TagSerializable
     {
+        public Dictionary<WheelchairAccessoryTypeEnum, List<Item>> wheelchairAccessoryList = new Dictionary<WheelchairAccessoryTypeEnum, List<Item>>();
+
+        public WheelchairAccData()
+        {
+            SetUpAccessorySlots();
+        }
+
+        public void SetUpAccessorySlots()
+        {
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Wheels, new List<Item>());
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Box, new List<Item>());
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Sidearm, new List<Item>());
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Shoulder, new List<Item>());
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Hull, new List<Item>());
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Undercarriage, new List<Item>());
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Back, new List<Item>());
+            wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Engine, new List<Item>());
+        }
+
+        public TagCompound SerializeData()
+        {
+            List<int> keyIntegers = wheelchairAccessoryList.Keys.Select(key => (int)key).ToList();
+            TagCompound tag = new TagCompound();
+
+            tag["wheelchairAccsKeys"] = keyIntegers;
+            tag["wheelchairAccsValues"] = wheelchairAccessoryList.Values.ToList();
+
+            return tag;
+        }
+
+        public Dictionary<WheelchairAccessoryTypeEnum, List<Item>> Deserialize(TagCompound tag)
+        {
+
+            var names = tag.Get<List<int>>("wheelchairAccsKeys");
+            List<WheelchairAccessoryTypeEnum> realNames = names.Select(x => (WheelchairAccessoryTypeEnum)x).ToList();
+            var values = tag.Get<List<List<Item>>>("wheelchairAccsValues");
+            wheelchairAccessoryList = realNames.Zip(values, (k, v) => new { Key = k, Value = v }).ToDictionary(x => x.Key, x => x.Value);
+
+            return wheelchairAccessoryList;
+        }
+    }
+    */
+    internal abstract class BaseWheelchairItem : ModItem
+    {
+        //public WheelchairAccData wheelchairAccData = new WheelchairAccData();
+
         public Dictionary<WheelchairAccessoryTypeEnum, List<Item>> wheelchairAccessoryList = new Dictionary<WheelchairAccessoryTypeEnum, List<Item>>();
 
         public WheelchairType wheelchairType = WheelchairType.Electric;
@@ -48,6 +97,59 @@ namespace MackWheelers.Content.Items.Mounts
             wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Engine, new List<Item>());
         }
 
+        /*
+            write how many items are in the list
+            then use ItemIO.Send to write the items
+            then, in the receiving end,
+            clear the list
+            read the number for how many items there are
+            then use ItemIO.Receive to read them
+
+            AND THE MOST IMPORTANT PART:
+            WHEN YOU NEED TO SYNC, CALL 
+            Item.NetStateChanged(); 
+            
+         */
+        public override void NetSend(BinaryWriter writer)
+        {
+            //kivi is key value
+            List<KeyValuePair<WheelchairAccessoryTypeEnum, List<Item>>> kivis = new List<KeyValuePair<WheelchairAccessoryTypeEnum, List<Item>>>();
+            foreach (var kivi in wheelchairAccessoryList)
+            {
+                kivis.Add(kivi);
+            }
+
+            foreach (var kivi in kivis)
+            {
+                writer.Write((int)kivi.Key);
+                writer.Write(kivi.Value.Count);
+                foreach(var val in kivi.Value)
+                {
+                    ItemIO.Send(val, writer);
+                }
+            }
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+            List<KeyValuePair<WheelchairAccessoryTypeEnum, List<Item>>> kivis = new List<KeyValuePair<WheelchairAccessoryTypeEnum, List<Item>>>();
+
+            wheelchairAccessoryList.Clear();
+            int slots;
+            for (int i = 0; i < 8; i++)
+            {
+                WheelchairAccessoryTypeEnum accEnum = (WheelchairAccessoryTypeEnum)reader.ReadInt32();
+                List<Item> newList = new List<Item>();
+                slots = reader.ReadInt32();
+                for (int f = 0; f < slots; f++)
+                {
+                    newList.Add(ItemIO.Receive(reader));
+                }
+                wheelchairAccessoryList.Add(accEnum, newList);
+            }
+            //should work tm
+        }
+
         public bool AddItem(Item item)
         {
             //if(item.ModItem.Type != ModContent.ItemType<BaseWheelchairAcc>())
@@ -60,6 +162,7 @@ namespace MackWheelers.Content.Items.Mounts
                 WheelchairAccessoryTypeEnum accType = (item.ModItem as BaseWheelchairAcc).GetAccType();
                 if (wheelchairAccessoryList[accType].Count >= WheelchairAccMaxValues.ItemSlotsMaxs[accType])
                 {
+                    //this shouldnt ever be called if addItem and removeItem are called properly
                     Main.NewText("tried to add a slot but there was no space, in basewheelchairitem");
                     Main.NewText("yeah i dunno bruv go fuk urself lmao, in basewheelchairitem");
                     return false;
@@ -75,27 +178,20 @@ namespace MackWheelers.Content.Items.Mounts
 
         public bool RemoveItem(Item item)
         {
-            //TODO:
-            //go through the list and find the item, then remove it
-
-            /*
-            if (item.ModItem.Type != ModContent.ItemType<BaseWheelchairAcc>())
+            if (!(item.ModItem is BaseWheelchairAcc))
             {
+                Main.NewText("tried to move item but its not a wheelchairacc how did you do that");
                 return false;
             }
             else
             {
                 WheelchairAccessoryTypeEnum accType = (item.ModItem as BaseWheelchairAcc).GetAccType();
-                if (wheelchairAccessoryList[accType].Count >= WheelchairAccMaxValues.ItemSlotsMaxs[accType])
+                if (!wheelchairAccessoryList[accType].Remove(item))
                 {
+                    Main.NewText("tried to remove item but its not present in the list");
                     return false;
                 }
-                else
-                {
-                    wheelchairAccessoryList[accType].Add(item);
-                }
             }
-            */
             return true;
         }
 

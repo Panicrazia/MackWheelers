@@ -9,10 +9,10 @@ using Terraria.UI;
 using Terraria;
 using Terraria.GameContent;
 using Microsoft.Xna.Framework;
-using MackWheelers.Content.Items;
 using MackWheelers.Content.Items.Mounts;
 using Terraria.ModLoader;
 using Microsoft.CodeAnalysis.FlowAnalysis;
+using MackWheelers.Content.Items.WheelchairAccessories;
 
 namespace MackWheelers.Common.UI
 {
@@ -103,7 +103,8 @@ namespace MackWheelers.Common.UI
                         UIElement parentParent = Parent.Parent;
                         if (parentParent is WheelchairAccessoryUI)
                         {
-                            (parentParent as WheelchairAccessoryUI).SetWheelchairType(WheelchairType.None);
+                            (parentParent as WheelchairAccessoryUI).SetWheelchairType(WheelchairType.None); 
+                            Item.NetStateChanged();
                         }
                         else
                         {

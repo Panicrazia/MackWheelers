@@ -46,6 +46,15 @@ namespace MackWheelers.Common.UI
             wheelchairWorkshopUIinterface?.SetState(null);
         }
 
+        public void wheelchairAccChange()
+        {
+            if (wheelchairWorkshopUIinterface?.CurrentState != null && wheelchairWorkshopUIinterface?.CurrentState is WheelchairAccessoryUI)
+            {
+                ((WheelchairAccessoryUI)wheelchairWorkshopUIinterface?.CurrentState).UpdateWheelchair();
+            }
+            
+        }
+
         public override void Load()
         {
             if (!Main.dedServ)

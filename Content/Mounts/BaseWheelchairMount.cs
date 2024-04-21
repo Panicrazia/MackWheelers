@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis;
 using Terraria.GameContent;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static Mono.CompilerServices.SymbolWriter.CodeBlockEntry;
+using MackWheelers.Content.Players;
 
 namespace MackWheelers.Content.Mounts
 {
@@ -128,9 +129,6 @@ namespace MackWheelers.Content.Mounts
 
         public override void UseAbility(Player player, Vector2 mousePosition, bool toggleOn)
         {
-            
-            
-
             if(toggleOn)
             {
                 Rectangle rect = player.getRect();
@@ -196,6 +194,7 @@ namespace MackWheelers.Content.Mounts
         
         public override void SetMount(Player player, ref bool skipDust)
         {
+            player.GetModPlayer<WheelchairPlayer>().OnWheelchairMountup();
             // When this mount is mounted, we initialize _mountSpecificData with a new CarSpecificData object which will track some extra visuals for the mount.
             //player.mount._mountSpecificData = new CarSpecificData();
 
@@ -206,11 +205,13 @@ namespace MackWheelers.Content.Mounts
 
         public override void Dismount(Player player, ref bool skipDust)
         {
+            var wheelchairPlayer = player.GetModPlayer<WheelchairPlayer>();
             if (player.mount._data.Minecart == true)
             {
                 player.mount._data.Minecart = false;
             }
-            player.GetModPlayer<WheelchairPlayer>().StopBothPushing();
+            wheelchairPlayer.StopBothPushing();
+            wheelchairPlayer.OnWheelchairMountup();
             DoDust(player);
             skipDust = true;
         }

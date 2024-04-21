@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MackWheelers.Content.Items
+namespace MackWheelers.Content.Items.WheelchairAccessories
 {
     public enum WheelchairAccessoryTypeEnum
     {

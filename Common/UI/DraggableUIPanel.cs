@@ -55,7 +55,7 @@ namespace MackWheelers.Common.UI
             Left.Set(endMousePosition.X - offset.X, 0f);
             Top.Set(endMousePosition.Y - offset.Y, 0f);
 
-            RecalculateChildrenButActuallyThisTime();
+            Recalculate();
         }
 
         public override void Update(GameTime gameTime)
@@ -73,7 +73,7 @@ namespace MackWheelers.Common.UI
             {
                 Left.Set(Main.mouseX - offset.X, 0f); // Main.MouseScreen.X and Main.mouseX are the same
                 Top.Set(Main.mouseY - offset.Y, 0f);
-                RecalculateChildrenButActuallyThisTime();
+                Recalculate();
             }
 
             // Here we check if the DraggableUIPanel is outside the Parent UIElement rectangle
@@ -85,11 +85,11 @@ namespace MackWheelers.Common.UI
                 Left.Pixels = Utils.Clamp(Left.Pixels, 0, parentSpace.Right - Width.Pixels);
                 Top.Pixels = Utils.Clamp(Top.Pixels, 0, parentSpace.Bottom - Height.Pixels);
                 // Recalculate forces the UI system to do the positioning math again.
-                RecalculateChildrenButActuallyThisTime();
+                Recalculate();
             }
         }
 
-
+        /*
         public override void RecalculateChildren()
         {
             //nothing here should work
@@ -99,10 +99,12 @@ namespace MackWheelers.Common.UI
             //
         }
 
+        //this is literally useless and 
         public void RecalculateChildrenButActuallyThisTime()
         {
+            
             Recalculate();
             base.RecalculateChildren();
-        }
+        }*/
     }
 }

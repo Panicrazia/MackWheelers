@@ -18,8 +18,10 @@ using System.IO;
 using Terraria.Audio;
 using MackWheelers.Content.Items;
 using Steamworks;
+using MackWheelers.Content.Projectiles;
+using System.Security.Policy;
 
-namespace MackWheelers
+namespace MackWheelers.Content.Players
 {
     public class WheelchairPlayer : ModPlayer
     {
@@ -29,7 +31,7 @@ namespace MackWheelers
         const float DEFAULTwheelchairSlowdownValue = .076f;
 
         //public bool isCrippled = false;
-        public bool isCrippled { get => player.HasBuff(ModContent.BuffType<Content.Buffs.PermanentlyCrippledDebuff>()); }
+        public bool isCrippled { get => player.HasBuff(ModContent.BuffType<Buffs.PermanentlyCrippledDebuff>()); }
         public bool isManuallyPushingSelf { get => true; }  //will be used for when the player doesnt have a battery to move themselves smoothly
         public int manualPushingTimer = 0;
 
@@ -48,33 +50,62 @@ namespace MackWheelers
 
         //maybe these shouldnt be nullable and just use -1 for nonexistant and check for it?? idk
         public int pusherWhoAmI = -1;
-        public WheelchairPlayer pusher { get => pusherWhoAmI != -1 ? Main.player[(int)pusherWhoAmI].GetModPlayer<WheelchairPlayer>() : null; }
+        public WheelchairPlayer pusher { get => pusherWhoAmI != -1 ? Main.player[pusherWhoAmI].GetModPlayer<WheelchairPlayer>() : null; }
         public int playerBeingPushedWhoAmI = -1;
-        public WheelchairPlayer playerBeingPushed { get => playerBeingPushedWhoAmI != -1 ? Main.player[(int)playerBeingPushedWhoAmI].GetModPlayer<WheelchairPlayer>() : null; }
+        public WheelchairPlayer playerBeingPushed { get => playerBeingPushedWhoAmI != -1 ? Main.player[playerBeingPushedWhoAmI].GetModPlayer<WheelchairPlayer>() : null; }
 
         public float mouseAiming;
 
-        public virtual int WheelchairBuff { get => ModContent.BuffType<Content.Buffs.WheelchairMountBuff>(); }
+        public virtual int WheelchairBuff { get => ModContent.BuffType<Buffs.WheelchairMountBuff>(); }
+
+        private bool tryLaunchWheelGrapple = false;
+        private bool tryLaunchWheelGrappleLock = false; //0 = good to fire, 1 = has fired, 2 = locked
+
+        public BaseWheelGrapple curWheelGrapple = null;
 
         public bool CanPushPlayers()
         {
-            return canPush && (isPurposefullyPushing || isPushing) && player.grapCount <= 0 && !player.mount.Active && !player.DeadOrGhost;
+            var val = (canPush || canPassivelyPush && isPushing)
+                && isPurposefullyPushing
+                && player.grapCount <= 0
+                && !player.mount.Active
+                && !player.DeadOrGhost;
+            return val;
+            //TODO: check for these, taken from grappling hook code, also player.cc or whatever it is
+            /*
+             * Main.player[this.owner].dead || Main.player[this.owner].stoned || Main.player[this.owner].webbed || Main.player[this.owner].frozen
+             * 
+             */
+
         }
 
         public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
         {
-
-
             return new[] {
                 new Item(ModContent.ItemType<A796KiloGramBoulder>(), 1),
             };
+        }
+
+        public void OnWheelchairMountup()
+        {
+            RemoveWheelGrapplingHook();
+        }
+        public void OnWheelchairDismount()
+        {
+            RemoveWheelGrapplingHook();
+        }
+
+        public void RemoveWheelGrapplingHook()
+        {
+            player.RemoveAllGrapplingHooks();
+            BaseWheelGrapple.DeleteAllHooks(player);
+            curWheelGrapple = null;
         }
 
         public override void SetControls()
         {
             if (isCrippled && player.controlMount)
             {
-                player.RemoveAllGrapplingHooks();
             }
             //should only take place if the player is riding in a wheelchair
             if (isCrippled && !player.mount.Active)
@@ -114,11 +145,89 @@ namespace MackWheelers
                 }
                 if (player.controlHook)
                 {
+                    if (!tryLaunchWheelGrappleLock)
+                    {
+                        tryLaunchWheelGrapple = true;
+                        tryLaunchWheelGrappleLock = true;
+                    }
                     player.controlHook = false;
+                }
+                else
+                {
+                    tryLaunchWheelGrappleLock = false;
                 }
             }
         }
-        //both the above and below are primarily for controlling movement, and applying the cripple effect
+
+        public override void ProcessTriggers(TriggersSet triggersSet)
+        {
+            if (triggersSet.Jump)
+            {
+                if (curWheelGrapple != null)
+                {
+                    curWheelGrapple.Projectile.active = false;
+                    curWheelGrapple.Projectile.Kill();
+                    curWheelGrapple = null;
+                }
+            }
+            if (triggersSet.MouseLeft)
+            {
+
+            }
+            if (player.mount._type == ModContent.MountType<BaseWheelchairMount>())
+            {
+                /*
+                if (triggersSet.Down)
+                {
+                    if (player.mount._data.Minecart == true)
+                    {
+                        player.mount._data.Minecart = false;
+                    }
+                }
+                */
+                if (triggersSet.Grapple)
+                {
+                    if (tryLaunchWheelGrapple)
+                    {
+                        //Main.NewText(tryLaunchWheelGrapple + "   " + tryLaunchWheelGrappleLock);
+                        tryLaunchWheelGrapple = false;
+                        BaseWheelGrapple.QuickWheelchairGrapple(player);
+                    }
+                    //Main.NewText("gets spammed??"); //yes it gets spammed
+                    //still gets called, which means I dont actually need a dedicated keybind?
+                    //the wheelchair things needs a fire once thing or needs an internal cooldown or something idk
+                }
+                if (KeybindSystem.WheelchairGrappleKeybind.JustPressed)
+                {
+                    Main.NewText("uep cheif");
+                }
+
+            }
+
+
+            if (KeybindSystem.WheelchairGrappleKeybind.JustPressed)
+            {
+                //int buff = Main.rand.Next(BuffID.Count);
+                //Player.AddBuff(buff, 600);
+
+                //Main.NewText(triggersSet.KeyStatus.TryAdd("Grapple", false));
+                if (player.mount._data != null)
+                {
+                    if (player.mount._data.Minecart == true)
+                    {
+                        player.mount._data.Minecart = false;
+                    }
+                    else
+                    {
+                        player.mount._data.Minecart = true;
+                    }
+                }
+
+                Main.NewText("Wheelchair grapplehook go");
+            }
+        }
+
+        //primarily for controlling movement, and applying the cripple effect
         public override void PostUpdateRunSpeeds()
         {
             //if I can find a way to make the run animation not spaz out then this is a fine option 
@@ -170,6 +279,7 @@ namespace MackWheelers
                 {
                     //Vector2 pusherHand = pusher.player.Center + new Vector2(pusher.player.direction * 0f, 5f);
 
+
                     player.direction = pusher.player.direction;
 
                     //player.velocity = pusher.player.velocity;
@@ -184,7 +294,11 @@ namespace MackWheelers
 
                     Main.SetCameraLerp(0.1f, 3); //also works with 0,1,2, honestly couldnt really tell a difference
 
-                    //how to make wheelchair not climb staircases from the backend??? please someone tell me
+
+                    player.stairFall = true; //fixes this annoying stair problem,
+                                             //downside is if someone drops you while climbing stairs you get dropped,
+                                             //but its better than this awful visual bug
+                                             //how to make wheelchair not climb staircases from the backend??? please someone tell me
                     /*      maybe its related to checking directionals??? like if you are walking towards a staircase from the back 
                      *      it checks if you are comoing from the back with reading your inputs... 
                      *      so maybe I have to see if I can use the pushing players inputs???
@@ -193,48 +307,55 @@ namespace MackWheelers
                 }
                 else //not being pushed, but on wheelchair
                 {
-                    int groundTile = GetFloorTileID();
-                    player.runAcceleration = GetPlayerAccelleration(groundTile);
-                    if (isManuallyPushingSelf)
+                    if (curWheelGrapple != null && curWheelGrapple.Projectile.ai[0] == 2f)
                     {
-                        int manualPushingTimerBase = 50;
-                        //Main.NewText("player y velocity 2: "+ num3);
-                        if (manualPushingTimer <= 0 && groundTile != -1)
+                        curWheelGrapple.PlayerGrappleMovement(player, curWheelGrapple.Projectile);
+                    }
+                    else
+                    {
+                        int groundTile = GetFloorTileID();
+                        player.runAcceleration = GetPlayerAccelleration(groundTile);
+                        if (isManuallyPushingSelf)
                         {
-                            //Main.NewText(player.maxRunSpeed);
-                            if (player.controlLeft)
+                            int manualPushingTimerBase = 50;
+                            //Main.NewText("player y velocity 2: "+ num3);
+                            if (manualPushingTimer <= 0 && groundTile != -1) //mabs do ground tile <= 0?
                             {
-                                player.velocity += new Vector2(-5f * player.runAcceleration, 0f);
-                                //Main.NewText("velX = "+ player.velocity.X + "  and runaccel = "+ player.runAcceleration);
-                                KneecapSpeed();
-                                manualPushingTimer = manualPushingTimerBase;
-                                player.controlLeft = false;
-                            }
-                            else if (player.controlRight)
-                            {
-                                player.velocity += new Vector2(5f * player.runAcceleration, 0f);
-                                //Main.NewText("velX = " + player.velocity.X + "  and runaccel = " + player.runAcceleration);
-                                KneecapSpeed();
-                                manualPushingTimer = manualPushingTimerBase;
-                            }
+                                //Main.NewText(player.maxRunSpeed);
+                                if (player.controlLeft)
+                                {
+                                    player.velocity += new Vector2(-5f * player.runAcceleration, 0f);
+                                    //Main.NewText("velX = "+ player.velocity.X + "  and runaccel = "+ player.runAcceleration);
+                                    KneecapSpeed();
+                                    manualPushingTimer = manualPushingTimerBase;
+                                    player.controlLeft = false;
+                                }
+                                else if (player.controlRight)
+                                {
+                                    player.velocity += new Vector2(5f * player.runAcceleration, 0f);
+                                    //Main.NewText("velX = " + player.velocity.X + "  and runaccel = " + player.runAcceleration);
+                                    KneecapSpeed();
+                                    manualPushingTimer = manualPushingTimerBase;
+                                }
 
-                            //bro magiluninessence straight up caps your speed at 6 with the wheelchair wtf, even though i let it go as high as 9
-                            //
-                            //             WHY
-                            //
+                                //bro magiluninessence straight up caps your speed at 6 with the wheelchair wtf, even though i let it go as high as 9
+                                //
+                                //             WHY
+                                //
+                            }
                         }
-                    }
-                    player.runSlowdown = GetPlayerSlowdown(groundTile);
-                    //Main.NewText(player.runSlowdown);
+                        player.runSlowdown = GetPlayerSlowdown(groundTile);
+                        //Main.NewText(player.runSlowdown);
 
 
-                    if (player.velocity.X > player.runSlowdown)
-                    {
-                        player.velocity.X -= player.runSlowdown;
-                    }
-                    else if (player.velocity.X < -player.runSlowdown)
-                    {
-                        player.velocity.X += player.runSlowdown;
+                        if (player.velocity.X > player.runSlowdown)
+                        {
+                            player.velocity.X -= player.runSlowdown;
+                        }
+                        else if (player.velocity.X < -player.runSlowdown)
+                        {
+                            player.velocity.X += player.runSlowdown;
+                        }
                     }
                 }
             }
@@ -255,8 +376,8 @@ namespace MackWheelers
         }
         public int GetFloorTileID()
         {
-            int num = (int)((player.position.X + (float)(player.width / 2)) / 16f);
-            int num2 = (int)((player.position.Y + (float)player.height) / 16f);
+            int num = (int)((player.position.X + player.width / 2) / 16f);
+            int num2 = (int)((player.position.Y + player.height) / 16f);
             if (player.gravDir == -1f)
             {
                 num2 = (int)(player.position.Y - 0.1f) / 16;
@@ -334,10 +455,10 @@ namespace MackWheelers
                 player.velocity -= new Vector2(pusher.player.direction * 26f, 10f);
                 //player.velocity = new Vector2(0, 0);
             }
-            if(isManuallyPushingSelf)
+            if (isManuallyPushingSelf)
             {
                 //Main.NewText(player.runSlowdown);
-                if (manualPushingTimer > 0) 
+                if (manualPushingTimer > 0)
                 {
                     manualPushingTimer--;
                 }
@@ -345,58 +466,6 @@ namespace MackWheelers
             base.PostUpdate();
         }
 
-        public override void ProcessTriggers(TriggersSet triggersSet)
-        {
-            if (triggersSet.MouseLeft)
-            {
-
-            }
-            if (player.mount._type == ModContent.MountType<BaseWheelchairMount>())
-            {
-                /*
-                if (triggersSet.Down)
-                {
-                    if (player.mount._data.Minecart == true)
-                    {
-                        player.mount._data.Minecart = false;
-                    }
-                }
-                */
-                if (triggersSet.Grapple)
-                {
-                    //Main.NewText("gets spammed??"); //yes it gets spammed
-                    //still gets called, which means I dont actually need a dedicated keybind?
-                    //the wheelchair things needs a fire once thing or needs an internal cooldown or something idk
-                }
-                if (KeybindSystem.WheelchairGrappleKeybind.JustPressed)
-                {
-                    Main.NewText("uep cheif");
-                }
-
-            }
-
-
-            if (KeybindSystem.WheelchairGrappleKeybind.JustPressed)
-            {
-                //int buff = Main.rand.Next(BuffID.Count);
-                //Player.AddBuff(buff, 600);
-
-                //Main.NewText(triggersSet.KeyStatus.TryAdd("Grapple", false));
-                if(player.mount._data != null)
-                {
-                    if (player.mount._data.Minecart == true)
-                    {
-                        player.mount._data.Minecart = false;
-                    }
-                    else
-                    {
-                        player.mount._data.Minecart = true;
-                    }
-                }
-
-                Main.NewText("Wheelchair grapplehook go");
-            }
-        }
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
@@ -413,7 +482,7 @@ namespace MackWheelers
             base.ModifyDrawInfo(ref drawInfo);
         }
 
-        
+
 
         //796 kilogram boulder
 
@@ -439,7 +508,7 @@ namespace MackWheelers
             base.PostUpdateMiscEffects();
         }
         */
-        
+
 
         public override void PreUpdate()
         {
@@ -467,6 +536,7 @@ namespace MackWheelers
             }
             if (true /* && Main.myPlayer == player.whoAmI*/)
             {
+                //Main.NewText(Entity.name + ": " + CanPushPlayers()+ "  " + isPushing + " " + isPurposefullyPushing + " " + (canPush && (isPurposefullyPushing || isPushing) && player.grapCount <= 0 && !player.mount.Active && !player.DeadOrGhost));
                 if (!isPushing)
                 {
                     WheelchairPlayer pusheee;
@@ -477,7 +547,7 @@ namespace MackWheelers
                 }
                 else
                 {
-                    if ((!CanPushPlayers() && !canPassivelyPush) || (!playerBeingPushed.canBePushed || playerBeingPushed.pusher!=this))
+                    if (!CanPushPlayers() && !canPassivelyPush || !playerBeingPushed.canBePushed || playerBeingPushed.pusher != this)
                     {
                         StopPushing(true);
                     }
@@ -498,7 +568,7 @@ namespace MackWheelers
         {
             foreach (Player playa in Main.player)
             {
-                if ((playa.whoAmI != Player.whoAmI) && (playa.Center - player.Center).LengthSquared() < (42f * 42f)) //if player is close enough
+                if (playa.whoAmI != Player.whoAmI && (playa.Center - player.Center).LengthSquared() < 42f * 42f) //if player is close enough
                 {
                     WheelchairPlayer wheeliePlaya = playa.GetModPlayer<WheelchairPlayer>();
                     if (wheeliePlaya.isRidingWheelchair && wheeliePlaya.canBePushed)
@@ -512,9 +582,9 @@ namespace MackWheelers
 
         public override void PostItemCheck()
         {
-            if(player.HeldItem.IsAir && isPushing)
+            if (player.HeldItem.IsAir && isPushing)
             {
-                if(player.controlUseItem)
+                if (player.controlUseItem)
                 {
                     StopPushingAndThrowWheelchair(true);
                 }
@@ -527,7 +597,7 @@ namespace MackWheelers
             //same with playerdisconnect/connect
             if (wasRidingWheelchair)
             {
-                player.mount.SetMount(ModContent.MountType<Content.Mounts.BaseWheelchairMount>(), this.player);
+                player.mount.SetMount(ModContent.MountType<BaseWheelchairMount>(), player);
             }
             base.OnRespawn();
         }
@@ -689,7 +759,7 @@ namespace MackWheelers
         {
             Vector2 mouseDirection;
 
-            if (angle != null) 
+            if (angle != null)
             {
                 mouseDirection = new Vector2((float)Math.Cos(angle.Value), (float)Math.Sin(angle.Value));
             }
@@ -697,14 +767,14 @@ namespace MackWheelers
             {
                 mouseDirection = new Vector2((float)Math.Cos(mouseAiming), (float)Math.Sin(mouseAiming));
             }
-             
+
 
             if (mouseDirection.X != 0)
             {
-                player.direction = (mouseDirection.X > 0 ? 1 : -1);
+                player.direction = mouseDirection.X > 0 ? 1 : -1;
             }
 
-            playerBeingPushed.player.velocity = (player.velocity + 10 * mouseDirection);
+            playerBeingPushed.player.velocity = player.velocity + 10 * mouseDirection;
 
             //soft caps like this are probs less needed with players
             /*
@@ -786,6 +856,45 @@ namespace MackWheelers
             ForceStopBeingPushed(false);
         }
 
+        /*
+         //probably not actually needed because of item syncing with netsend and whatnot
+        public void UpdateWheelAccs(Item wheelchair, bool send = true)
+        {
+            canBePushed = false;
+            isBeingPushed = false;
+            if (pusher != null)
+            {
+                pusher.isPushing = false;
+                pusher.playerBeingPushedWhoAmI = -1;
+                pusherWhoAmI = -1;
+            }
+            if (send)
+            {
+                SendWheelAccsPacket(-1, player.whoAmI, wheelchair);
+                //SendForceStopPushingPacket(-1, -1);
+            }
+        }
+        public void SendWheelAccsPacket(int toWho, int fromWho, Item wheelchair)
+        {
+            ModPacket packet = Mod.GetPacket();
+            packet.Write((byte)MackWheelers.MessageType.PlayerStopPushingThrow);
+            packet.Write((byte)Player.whoAmI);
+            packet.Write(mouseAiming);
+
+
+            //ModPacket packet = Mod.GetPacket();
+
+            packet.Write((byte)MackWheelers.MessageType.ForceStopPushing);
+            packet.Write((byte)Player.whoAmI);
+            packet.wri(wheelchair);
+
+            packet.Send(toWho, fromWho);
+        }
+        public void ReceiveWheelAccsPacket(BinaryReader reader, Item wheelchair)
+        {
+            UpdateWheelAccs(wheelchair, false);
+        }
+        */
 
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)

@@ -2,14 +2,15 @@ using System.IO;
 using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
-using MackWheelers.Content.Items;
+using MackWheelers.Content.Items.WheelchairAccessories;
 
 namespace MackWheelers
 {
-	public class MackWheelers : Mod
+    public class MackWheelers : Mod
 	{
         public override void Load()
         {
+            //no idea if this is the right place to do this lmao
             WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Wheels, 3);
             WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Box, 3);
             WheelchairAccMaxValues.ItemSlotsMaxs.Add(WheelchairAccessoryTypeEnum.Sidearm, 2);
@@ -29,7 +30,8 @@ namespace MackWheelers
             PlayerStopPushing,
             PlayerStopPushingThrow,
             ForceStopPushing,
-            WheelchairMinecartShift
+            WheelchairMinecartShift//,
+            //SendWheelchairAccessorys
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -113,6 +115,19 @@ namespace MackWheelers
                     }*/
 
                     break;
+                    /*
+                case MessageType.SendWheelchairAccessorys:
+                    {
+                        byte playerNumber = reader.ReadByte();
+                        WheelchairPlayer wheeliePlayer = Main.player[playerNumber].GetModPlayer<WheelchairPlayer>();
+
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            // Forward the changes to the other clients
+                            wheeliePlayer.SendWheelAccsPacket(-1, whoAmI);
+                        }
+                    }
+                    break;*/
                 default:
                     Logger.WarnFormat("MackWheelers: Unknown Message type: {0}", msgType);
                     break;

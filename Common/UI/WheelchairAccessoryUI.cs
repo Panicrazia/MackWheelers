@@ -14,7 +14,6 @@ using Terraria.UI;
 using Terraria;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.UI.Elements;
-using MackWheelers.Content.Items;
 using System.Collections;
 using Terraria.GameContent.Achievements;
 using Humanizer;
@@ -22,6 +21,8 @@ using Terraria.ModLoader.UI;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.Events;
 using MackWheelers.Content.Items.Mounts;
+using Terraria.GameContent.Bestiary;
+using MackWheelers.Content.Items.WheelchairAccessories;
 
 namespace MackWheelers.Common.UI
 {
@@ -80,8 +81,6 @@ namespace MackWheelers.Common.UI
             WheelchairSlot = new WheelchairAccessoryItemSlotWrapper(WheelchairAccessoryTypeEnum.Wheelchair, true, 1f);
             SetWheelchairItemSlot(WheelchairSlot);
             wheelchairAccessoryWorkshop.Append(WheelchairSlot);
-
-            WheelchairSlot.Initialize();    //hopefully this fixes the initial position bug, otherwise look into initialize and OnInitialize
             
             /*
             //close button
@@ -110,13 +109,15 @@ namespace MackWheelers.Common.UI
 
 
             Append(wheelchairAccessoryWorkshop);
+            //wheelchairAccessoryWorkshop.Recalculate();
+            //WheelchairSlot.Recalculate();
         }
 
         public void SetWheelchairType(WheelchairType newType)
         {
-            Main.NewText("old wheelchairType: " + wheelchairType);
+            //Main.NewText("old wheelchairType: " + wheelchairType);
             wheelchairType = newType;
-            Main.NewText("new wheelchairType: " + wheelchairType);
+            //Main.NewText("new wheelchairType: " + wheelchairType);
             ReDoItemSlots();
         }
 
@@ -178,27 +179,13 @@ namespace MackWheelers.Common.UI
 
         public void PopulateSections(Dictionary<WheelchairAccessoryTypeEnum, List<Item>> itemDict)
         {
-            /*
-            foreach (KeyValuePair<WheelchairAccessoryTypeEnum, List<WheelchairAccessoryItemSlotWrapper>> entry in ItemSlots)
-            {
-                foreach (var item in entry.Value.Select((value, i) => new { i, value }))
-                {
-                    //assuming this goes from low index to high then this should be fine
-                    var value = item.value;
-                    var index = item.i;
-                }
-                //shallow copy should be fine right???
-                ItemSlots = itemDict
-            }
-            */
-
             //i dunno if this is a shallow copy or not but if it works idk
             foreach (KeyValuePair<WheelchairAccessoryTypeEnum, List<Item>> entry in itemDict)
             {
                 foreach (var item in entry.Value.Select((value, i) => new { i, value }))
                 {
                     var value = item.value;
-                    var index = item.i;
+                    var index = (item.i);
 
                     ItemSlots[entry.Key][index].SetItem(value);
                 }
@@ -253,6 +240,9 @@ namespace MackWheelers.Common.UI
             uiElement.Top.Set((UIConstants.WHEELCHAIRWORKSHOPHEIGHT *.5f) - (UIConstants.ITEMSLOTREALSIZE * .5f), 0f);
             uiElement.Width.Set(UIConstants.ITEMSLOTREALSIZE, 0f);
             uiElement.Height.Set(UIConstants.ITEMSLOTREALSIZE, 0f);
+            CalculatedStyle innerDimensions = uiElement.GetInnerDimensions();
+            innerDimensions.X = -1000f;//please god work
+                                       //it did :)
         }
 
         protected void SetSelfRectangle(UIElement uiElement, float left, float top, float width, float height)
@@ -289,6 +279,11 @@ namespace MackWheelers.Common.UI
 
             wheelchair.RemoveItem(item);
         }
+
+        public void UpdateWheelchair()
+        {
+            //Item.NetStateChanged();
+        }
     }
 
     internal class UIItemSlotSection : UIElement
@@ -307,32 +302,19 @@ namespace MackWheelers.Common.UI
             leftOriented = left;
             uiElement.Append(this);
         }
+
         /*
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
          *  WE WANT MARGIN LEFT TO BE 1 ON RIGHT SIDE ITEMSLOTS
          * 
          *  AND WE WANT MARGIN LEFT TO BE 0 ON LEFT SIDE ITEMSLOTS
          * 
          *  THIS MAKES THEM SYMMETRICAL
+         *  
+         *  BUT FOR SOME UNKNOWN REASON IT DOESNT WORK WHEN SETTING THE ITEMSLOTS????
+         * 
+         *  WHY IS THIS NEEDED
          * 
          *  FUCK
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
-         * 
          */
         public void AddItemSlot(WheelchairAccessoryItemSlotWrapper thing, int count)
         {

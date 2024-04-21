@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria;
 using MackWheelers.Content.Mounts;
+using MackWheelers.Content.Players;
 
 namespace MackWheelers.Content.Items
 {

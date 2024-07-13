@@ -93,12 +93,27 @@ Items: {
 
 	PrehmWheelGrapple1: {
 		DisplayName: Prehm Wheel Grapple1
-		Tooltip: ""
+		Tooltip: "Basic Wheelchair Grapple"
 	}
 
 	PrehmWheelGrapple1Item: {
 		DisplayName: Prehm Wheel Grapple1 Item
-		Tooltip: ""
+		Tooltip: "Basic Wheelchair Grapple"
+	}
+
+	DuneCrawlersItem: {
+		DisplayName: Dune Crawlers Item
+		Tooltip: "Dune Crawlers"
+	}
+
+	SnowSledsItem: {
+		DisplayName: Snow Sleds Item
+		Tooltip: "Snow Sleds"
+	}
+
+	IceSkatesItem: {
+		DisplayName: Ice Skates Item
+		Tooltip: "Ice Skates"
 	}
 }
 
@@ -111,6 +126,11 @@ Buffs: {
 	PermanentlyCrippledDebuff: {
 		DisplayName: Permanently Crippled
 		Description: You cannot move without assistance
+	}
+
+	BaseWheelchairMountBuff: {
+		DisplayName: Base Wheelchair Mount Buff
+		Description: Mods.MackWheelers.Buffs.BaseWheelchairMountBuff.Description
 	}
 }
 

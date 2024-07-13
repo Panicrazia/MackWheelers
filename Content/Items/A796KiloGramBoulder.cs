@@ -30,6 +30,11 @@ namespace MackWheelers.Content.Items
         // Please see Content/ExampleRecipes.cs for a detailed explanation of recipe creation.
         public override void AddRecipes()
         {
+            CreateRecipe()
+                .AddIngredient(ItemID.Boulder, 3)
+                //.AddIngredient(ModContent.ItemType<ExampleItem>(), 15)
+                .AddTile(TileID.HeavyWorkBench)
+                .Register();
         }
 
         public override bool? UseItem(Player player)

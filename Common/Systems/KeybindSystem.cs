@@ -9,11 +9,11 @@ namespace MackWheelers.Common.Systems
 {
     internal class KeybindSystem : ModSystem
     {
-        public static ModKeybind WheelchairGrappleKeybind { get; private set; }
+        //public static ModKeybind WheelchairGrappleKeybind { get; private set; }
 
         public override void Load()
         {
-            WheelchairGrappleKeybind = KeybindLoader.RegisterKeybind(Mod, "WheelchairGrapple", "P");
+            //WheelchairGrappleKeybind = KeybindLoader.RegisterKeybind(Mod, "WheelchairGrapple", "P");
         }
 
 
@@ -21,7 +21,8 @@ namespace MackWheelers.Common.Systems
         public override void Unload()
         {
             // Not required if your AssemblyLoadContext is unloading properly, but nulling out static fields can help you figure out what's keeping it loaded.
-            WheelchairGrappleKeybind = null;
+
+            //WheelchairGrappleKeybind = null;
         }
     }
 }

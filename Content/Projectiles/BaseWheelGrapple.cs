@@ -19,7 +19,7 @@ namespace MackWheelers.Content.Projectiles
 {
     public abstract class BaseWheelGrapple : ModProjectile
     {
-        public static float hookRange = 500f;
+        public static float hookRange = 250f;
 
         public static void QuickWheelchairGrapple(Player player)
         {
@@ -60,7 +60,8 @@ namespace MackWheelers.Content.Projectiles
             {
                 return;
             }
-            bool? flag3 = ProjectileLoader.CanUseGrapple(item.shoot, player);
+            //bool? flag3 = ProjectileLoader.CanUseGrapple(item.shoot, player); //fucks it up for some reason
+            bool? flag3 = ProjectileLoader.GetProjectile(item.shoot)?.CanUseGrapple(player);
             if (flag3.HasValue)
             {
                 if (!flag3.GetValueOrDefault())
@@ -505,7 +506,7 @@ namespace MackWheelers.Content.Projectiles
         //taken and modified slightly from terraria overhaul, makes them work like a swing point rather than a latch
         public void PlayerGrappleMovement(Player player, Projectile proj)
         {
-            
+
             //I have no idea why this works, if I change anything it seems to break in weird ways
             var playerCenter = player.Center;
             var projCenter = proj.Center;
@@ -566,7 +567,15 @@ namespace MackWheelers.Content.Projectiles
             }
             else
             {
-                player.velocity.X *= 0.995f;
+                Vector2 desiredPosition = Projectile.Center;
+                desiredPosition.Y += maxDist;
+                desiredPosition = desiredPosition - player.Center;// - new Vector2(player.width/2f, 0f)
+                //Main.NewText(player.velocity.X);
+                //Main.NewText(desiredPosition);
+                //this might need to be scaled with distance, but right now im not seeing any issues
+                desiredPosition *= ((Math.Abs(desiredPosition.X) < 60f && Math.Abs(player.velocity.X) < .8f) ? (Math.Abs(desiredPosition.X) < 30f) ? .009f : .004f : .0009f);
+                //desiredPosition *= (Math.Abs(player.velocity.X) > .8f) ? .0009f : (Math.Abs(desiredPosition.X) < 30f) ? .009f : (Math.Abs(desiredPosition.X) < 60f) ? .004f : .0009f;
+                player.velocity.X += desiredPosition.X;
             }
 
             float tempVal;

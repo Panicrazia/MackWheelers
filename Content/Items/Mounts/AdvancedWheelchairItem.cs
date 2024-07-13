@@ -21,9 +21,13 @@ namespace MackWheelers.Content.Items.Mounts
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			Item.mountType = ModContent.MountType<BaseWheelchairMount>();
+			Item.mountType = ModContent.MountType<AdvancedWheelchairMount>();
 			wheelchairType = WheelchairType.Advanced;
 			enumType = WheelchairAccessoryTypeEnum.Wheelchair;
-		}
-	}
+        }
+        public override void AddRecipes()
+        {
+            //TODO: make recipie
+        }
+    }
 }

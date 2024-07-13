@@ -23,5 +23,16 @@ namespace MackWheelers.Content.Items.GrappleHooks
             // Item.useTime = 0;
             // Item.useAnimation = 0;
         }
+        public override void AddRecipes()
+        {
+            //TODO: make this post skeletron, probably requiring a drop from wheelchair skeletons in the dungeon
+            /*
+            CreateRecipe()
+                .AddRecipeGroup(RecipeGroupID.Wood, 30)
+                //.AddIngredient(ModContent.ItemType<ExampleItem>(), 15)
+                .AddTile(TileID.WorkBenches)
+                .Register();
+            */
+        }
     }
 }

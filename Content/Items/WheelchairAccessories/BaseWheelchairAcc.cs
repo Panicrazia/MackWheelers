@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition.Convention;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,15 @@ namespace MackWheelers.Content.Items.WheelchairAccessories
     {
         public static Dictionary<WheelchairAccessoryTypeEnum, int> ItemSlotsMaxs = new Dictionary<WheelchairAccessoryTypeEnum, int>();
     }
+
+    public enum WheelchairAccEnum
+    {
+        DuneCrawlers,
+        SnowSleds,
+        IceSkates,
+        Default
+    }
+
     internal abstract class BaseWheelchairAcc : ModItem
     {
         public WheelchairAccessoryTypeEnum enumType;
@@ -20,6 +30,12 @@ namespace MackWheelers.Content.Items.WheelchairAccessories
         {
             return enumType;
         }
+
+        public virtual WheelchairAccEnum GetAccEnum()
+        {
+            return WheelchairAccEnum.Default;
+        }
+
     }
 
 }

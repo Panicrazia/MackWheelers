@@ -20,7 +20,7 @@ namespace MackWheelers.Content.Players
         public int actualChargeMax; // Maximum amount of our example resource. We will change that variable to increase maximum amount of our resource
         public float chargeRegenRate; // By changing that variable we can increase/decrease regeneration rate of our resource
         internal int chargeRegenTimer = 0; // A variable that is required for our timer
-        public static readonly Color HealExampleResource = new(187, 91, 201); // We can use this for CombatText, if you create an item that replenishes chargeAmount.
+        public static readonly Color HealExampleResource = new(20, 216, 239); // We can use this for CombatText, if you create an item that replenishes chargeAmount.
 
         // In order to make the Example Resource example straightforward, several things have been left out that would be needed for a fully functional resource similar to mana and health. 
         // Here are additional things you might need to implement if you intend to make a custom resource:
@@ -64,19 +64,24 @@ namespace MackWheelers.Content.Players
         private void UpdateResource()
         {
             // For our resource lets make it regen slowly over time to keep it simple, let's use chargeRegenTimer to count up to whatever value we want, then increase currentResource.
+            /*
             chargeRegenTimer++; // Increase it by 60 per second, or 1 per tick.
 
             // A simple timer that goes up to 1 second, increases the chargeAmount by 1 and then resets back to 0.
-            if (chargeRegenTimer > 60 / chargeRegenRate)
+            if (chargeRegenTimer > 60 / chargeRegenRate)    //this only works for slow charging things, it will not work for my needs
             {
                 chargeAmount += 1;
                 chargeRegenTimer = 0;
             }
-
+            */
             // Limit chargeAmount from going over the limit imposed by tempChargeMax.
+            //maybe have an overcharge mechanic with an accessory?
             chargeAmount = Utils.Clamp(chargeAmount, 0, actualChargeMax);
         }
 
+        /// <summary>
+        /// checks if the player should have infinite resources and if so, maxes out charge
+        /// </summary>
         private void CapResourceGodMode()
         {
             if (Main.myPlayer == Player.whoAmI && Player.creativeGodMode)

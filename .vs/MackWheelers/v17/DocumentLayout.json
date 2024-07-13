@@ -1,0 +1,174 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\items\\wheelchairaccessories\\basewheelchairsidearmacc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\items\\wheelchairaccessories\\basewheelchairsidearmacc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\players\\wheelchairplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\players\\wheelchairplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\items\\wheelchairaccessories\\wheelaccessories\\snowsledsitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\items\\wheelchairaccessories\\wheelaccessories\\snowsledsitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\localization\\en-us_mods.mackwheelers.hjson||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:localization\\en-us_mods.mackwheelers.hjson||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\items\\wheelchairworkshop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\items\\wheelchairworkshop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\items\\debugmjolnir.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\items\\debugmjolnir.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\items\\wheelchairaccessories\\basewheelchairacc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\items\\wheelchairaccessories\\basewheelchairacc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\mounts\\basewheelchairmount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\mounts\\basewheelchairmount.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|c:\\users\\panic\\onedrive\\documents\\my games\\terraria\\tmodloader\\modsources\\mackwheelers\\content\\items\\mounts\\basewheelchairitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D1BBFB74-B436-420D-8396-70DDF1122A9C}|MackWheelers.csproj|solutionrelative:content\\items\\mounts\\basewheelchairitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "BaseWheelchairSidearmAcc.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairAccessories\\BaseWheelchairSidearmAcc.cs",
+              "RelativeDocumentMoniker": "Content\\Items\\WheelchairAccessories\\BaseWheelchairSidearmAcc.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairAccessories\\BaseWheelchairSidearmAcc.cs",
+              "RelativeToolTip": "Content\\Items\\WheelchairAccessories\\BaseWheelchairSidearmAcc.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-13T23:19:04.91Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "en-US_Mods.MackWheelers.hjson",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Localization\\en-US_Mods.MackWheelers.hjson",
+              "RelativeDocumentMoniker": "Localization\\en-US_Mods.MackWheelers.hjson",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Localization\\en-US_Mods.MackWheelers.hjson",
+              "RelativeToolTip": "Localization\\en-US_Mods.MackWheelers.hjson",
+              "ViewState": "AQIAAGMAAAAAAAAAAAAAAHUAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-07-13T23:12:25.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "WheelchairWorkshop.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairWorkshop.cs",
+              "RelativeDocumentMoniker": "Content\\Items\\WheelchairWorkshop.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairWorkshop.cs",
+              "RelativeToolTip": "Content\\Items\\WheelchairWorkshop.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-13T23:12:01.365Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DebugMjolnir.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\DebugMjolnir.cs",
+              "RelativeDocumentMoniker": "Content\\Items\\DebugMjolnir.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\DebugMjolnir.cs",
+              "RelativeToolTip": "Content\\Items\\DebugMjolnir.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-13T23:11:56.438Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SnowSledsItem.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairAccessories\\WheelAccessories\\SnowSledsItem.cs",
+              "RelativeDocumentMoniker": "Content\\Items\\WheelchairAccessories\\WheelAccessories\\SnowSledsItem.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairAccessories\\WheelAccessories\\SnowSledsItem.cs",
+              "RelativeToolTip": "Content\\Items\\WheelchairAccessories\\WheelAccessories\\SnowSledsItem.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAB8AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-08T20:49:36.936Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "BaseWheelchairAcc.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairAccessories\\BaseWheelchairAcc.cs",
+              "RelativeDocumentMoniker": "Content\\Items\\WheelchairAccessories\\BaseWheelchairAcc.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\WheelchairAccessories\\BaseWheelchairAcc.cs",
+              "RelativeToolTip": "Content\\Items\\WheelchairAccessories\\BaseWheelchairAcc.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-08T03:32:57.895Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "BaseWheelchairItem.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\Mounts\\BaseWheelchairItem.cs",
+              "RelativeDocumentMoniker": "Content\\Items\\Mounts\\BaseWheelchairItem.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Items\\Mounts\\BaseWheelchairItem.cs",
+              "RelativeToolTip": "Content\\Items\\Mounts\\BaseWheelchairItem.cs",
+              "ViewState": "AQIAABIAAAAAAAAAAAAAAGMAAABdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-08T03:30:52.807Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "BaseWheelchairMount.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Mounts\\BaseWheelchairMount.cs",
+              "RelativeDocumentMoniker": "Content\\Mounts\\BaseWheelchairMount.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Mounts\\BaseWheelchairMount.cs",
+              "RelativeToolTip": "Content\\Mounts\\BaseWheelchairMount.cs",
+              "ViewState": "AQIAADkBAAAAAAAAAAAIwEYBAAAOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-04T23:25:14.214Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "WheelchairPlayer.cs",
+              "DocumentMoniker": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Players\\WheelchairPlayer.cs",
+              "RelativeDocumentMoniker": "Content\\Players\\WheelchairPlayer.cs",
+              "ToolTip": "C:\\Users\\panic\\OneDrive\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\MackWheelers\\Content\\Players\\WheelchairPlayer.cs",
+              "RelativeToolTip": "Content\\Players\\WheelchairPlayer.cs",
+              "ViewState": "AQIAAAgCAAAAAAAAAAAmwCUCAAAmAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-04T19:31:13.544Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

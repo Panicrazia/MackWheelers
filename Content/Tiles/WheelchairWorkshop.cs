@@ -18,6 +18,7 @@ namespace MackWheelers.Content.Tiles
 {
     internal class WheelchairWorkshop : ModTile
 	{
+        //TODO: make it so when you step away the ui closes and you get the wheelchair back in your inventory/on the ground
 		public override void SetStaticDefaults()
         {
             // Properties

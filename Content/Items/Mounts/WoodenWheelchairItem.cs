@@ -21,9 +21,19 @@ namespace MackWheelers.Content.Items.Mounts
         public override void SetDefaults()
         {
             base.SetDefaults();
-            Item.mountType = ModContent.MountType<BaseWheelchairMount>();
+            Item.mountType = ModContent.MountType<WoodenWheelchairMount>();
+            Item.rare = ItemRarityID.White;
             wheelchairType = WheelchairType.Wooden; 
             enumType = WheelchairAccessoryTypeEnum.Wheelchair;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddRecipeGroup(RecipeGroupID.Wood, 30)
+                //.AddIngredient(ModContent.ItemType<ExampleItem>(), 15)
+                .AddTile(TileID.WorkBenches)
+                .Register();
         }
     }
 }

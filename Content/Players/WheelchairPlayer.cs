@@ -1,25 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
-using Terraria.GameInput;
-using MackWheelers.Common.Systems;
+﻿using MackWheelers.Common.Systems;
+using MackWheelers.Content.Items;
+using MackWheelers.Content.Items.Mounts;
+using MackWheelers.Content.Items.WheelchairAccessories;
 using MackWheelers.Content.Mounts;
-using Microsoft.CodeAnalysis;
-using static Humanizer.In;
+using MackWheelers.Content.Projectiles;
 using Microsoft.Xna.Framework;
 using rail;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using Terraria;
 using Terraria.Audio;
-using MackWheelers.Content.Items;
-using Steamworks;
-using MackWheelers.Content.Projectiles;
-using System.Security.Policy;
+using Terraria.DataStructures;
+using Terraria.GameInput;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ModLoader.Default;
 
 namespace MackWheelers.Content.Players
 {
@@ -32,7 +28,7 @@ namespace MackWheelers.Content.Players
 
         //public bool isCrippled = false;
         public bool isCrippled { get => player.HasBuff(ModContent.BuffType<Buffs.PermanentlyCrippledDebuff>()); }
-        public bool isManuallyPushingSelf { get => true; }  //will be used for when the player doesnt have a battery to move themselves smoothly
+        public bool isManuallyPushingSelf { get => GetPlayerCharge() < 1f; }  //will be used for when the player doesnt have a battery to move themselves smoothly
         public int manualPushingTimer = 0;
 
         public bool isBeingPushed = false; //is currently in a wheelchair and being pushed by someone
@@ -46,7 +42,7 @@ namespace MackWheelers.Content.Players
 
         public bool wasRidingWheelchair = false;
 
-        public bool isRidingWheelchair { get => player.mount._type == ModContent.MountType<BaseWheelchairMount>(); }
+        public bool isRidingWheelchair { get => player.mount._data != null && player.mount._data.ModMount is BaseWheelchairMount; }
 
         //maybe these shouldnt be nullable and just use -1 for nonexistant and check for it?? idk
         public int pusherWhoAmI = -1;
@@ -56,10 +52,15 @@ namespace MackWheelers.Content.Players
 
         public float mouseAiming;
 
-        public virtual int WheelchairBuff { get => ModContent.BuffType<Buffs.WheelchairMountBuff>(); }
+        public virtual int WheelchairBuff { get => ModContent.BuffType<Buffs.BaseWheelchairMountBuff>(); }
 
         private bool tryLaunchWheelGrapple = false;
         private bool tryLaunchWheelGrappleLock = false; //0 = good to fire, 1 = has fired, 2 = locked
+
+        public HashSet<WheelchairAccEnum> wheelchairAccs = new HashSet<WheelchairAccEnum>();
+        public bool wheelAccCrawlers = false;
+        public bool wheelAccSleds = false;
+        public bool wheelAccSkates = false;
 
         public BaseWheelGrapple curWheelGrapple = null;
 
@@ -78,6 +79,51 @@ namespace MackWheelers.Content.Players
              */
 
         }
+        public void ReadWheelchairAccs() //defaults to looking at the players mount slot, need to change to also recognize using the item from hotbar???
+        {
+            ReadWheelchairAccs(player.miscEquips[3]);
+        }
+        public void ReadWheelchairAccs(Item item)
+        {
+            if(item != null && item.ModItem != null && item.ModItem is BaseWheelchairItem)
+            {
+                ClearWheelchairAccs();//(item.ModItem as BaseWheelchairItem)
+                Dictionary<WheelchairAccessoryTypeEnum, List<Item>> wheelchairAccessoryList = (item.ModItem as BaseWheelchairItem).GetWheelchairAccessoryList();
+
+                foreach (var kivi in wheelchairAccessoryList)
+                {
+                    foreach (var tempAcc in kivi.Value)
+                    {
+                        if (tempAcc != null && tempAcc.ModItem != null && tempAcc.ModItem is BaseWheelchairAcc)
+                        {
+                            wheelchairAccs.Add((tempAcc.ModItem as BaseWheelchairAcc).GetAccEnum());
+                        }
+                    }
+                }
+            }
+        }
+
+        public void ClearWheelchairAccs()
+        {
+            wheelchairAccs.Clear(); 
+            wheelAccCrawlers = false;
+            wheelAccSleds = false;
+            wheelAccSkates = false;
+        }
+
+        public void GetWheelchairAccs()
+        {
+            foreach (WheelchairAccEnum acc in wheelchairAccs)
+            {
+                switch (acc)
+                {
+                    case WheelchairAccEnum.DuneCrawlers: wheelAccCrawlers = true; break;
+                    case WheelchairAccEnum.SnowSleds: wheelAccSleds = true; break;
+                    case WheelchairAccEnum.IceSkates: wheelAccSkates = true; break;
+                    default: break;
+                }
+            }
+        }
 
         public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
         {
@@ -89,6 +135,9 @@ namespace MackWheelers.Content.Players
         public void OnWheelchairMountup()
         {
             RemoveWheelGrapplingHook();
+            ClearWheelchairAccs();
+            ReadWheelchairAccs();
+            GetWheelchairAccs();
         }
         public void OnWheelchairDismount()
         {
@@ -174,7 +223,7 @@ namespace MackWheelers.Content.Players
             {
 
             }
-            if (player.mount._type == ModContent.MountType<BaseWheelchairMount>())
+            if (isRidingWheelchair)
             {
                 /*
                 if (triggersSet.Down)
@@ -197,14 +246,16 @@ namespace MackWheelers.Content.Players
                     //still gets called, which means I dont actually need a dedicated keybind?
                     //the wheelchair things needs a fire once thing or needs an internal cooldown or something idk
                 }
+                /*
                 if (KeybindSystem.WheelchairGrappleKeybind.JustPressed)
                 {
-                    Main.NewText("uep cheif");
+                    //Main.NewText("uep cheif");
                 }
+                */
 
             }
 
-
+            /*
             if (KeybindSystem.WheelchairGrappleKeybind.JustPressed)
             {
                 //int buff = Main.rand.Next(BuffID.Count);
@@ -213,6 +264,9 @@ namespace MackWheelers.Content.Players
                 //Main.NewText(triggersSet.KeyStatus.TryAdd("Grapple", false));
                 if (player.mount._data != null)
                 {
+                    player.mount._data.jumpHeight = 5;
+                    player.mount._data.jumpSpeed = 5f;
+                    
                     if (player.mount._data.Minecart == true)
                     {
                         player.mount._data.Minecart = false;
@@ -225,11 +279,15 @@ namespace MackWheelers.Content.Players
 
                 Main.NewText("Wheelchair grapplehook go");
             }
+            */
         }
 
         //primarily for controlling movement, and applying the cripple effect
         public override void PostUpdateRunSpeeds()
         {
+            //player.gfxOffY = 0f;
+            //player.gfxOffY -= 4f;
+            //lrupj = left right up down jump
             //if I can find a way to make the run animation not spaz out then this is a fine option 
             if (isCrippled && !player.mount.Active)
             {   /* an alternative to just disabling the controls for lrupj
@@ -240,10 +298,39 @@ namespace MackWheelers.Content.Players
             }
             else if (player.mount.Active && isRidingWheelchair)
             {
-                if (isManuallyPushingSelf)
+                if (isBeingPushed && pusher != null) //if being pushed
                 {
-                    player.runAcceleration = 0f; //IMPORTANT the manual mode will not work if this is not here
-                    //player.maxRunSpeed = 0f;
+
+                }
+                else
+                {
+                    if (curWheelGrapple != null && curWheelGrapple.Projectile.ai[0] == 2f) //if grappled
+                    {
+
+                    }
+                    else
+                    {
+                        int groundTile = GetFloorTileID();
+                        player.runAcceleration = GetPlayerAccelleration(groundTile);
+                        if (isManuallyPushingSelf)
+                        {
+                            player.runAcceleration = 0f; //IMPORTANT the manual mode will not work if this is not here
+                            player.maxRunSpeed *= GetPlayerMaxSpeed(groundTile);
+                            player.runSlowdown *= GetPlayerSlowdown(groundTile);
+                            //player.runSlowdown *= GetPlayerSlowdown(groundTile);
+                            //player.maxRunSpeed = 0f;
+                        }
+                        else
+                        {
+                            //Main.NewText(player.velocity.X);
+                            //Main.NewText(player.maxRunSpeed);
+                            player.maxRunSpeed *= GetPlayerMaxSpeed(groundTile);
+                            player.runAcceleration *= (GetPlayerAccelleration(groundTile) *.18f);
+                            player.runSlowdown *= GetPlayerSlowdown(groundTile);
+                            //player.runSlowdown *= GetPlayerSlowdown(groundTile);
+
+                        }
+                    }
                 }
             }
             base.PostUpdateRunSpeeds();
@@ -264,6 +351,9 @@ namespace MackWheelers.Content.Players
 
         public override void PreUpdateMovement()
         {
+            //player.gfxOffY = 0f;
+            //player.gfxOffY -= 4f;
+            //Main.NewText(player.gfxOffY + " PUM");
             if (isCrippled && !player.mount.Active)
             {
                 //just to be double sure
@@ -275,6 +365,7 @@ namespace MackWheelers.Content.Players
                 player.mount._data.jumpHeight = 5;
                 player.mount._data.jumpSpeed = 5f;
                 */
+                //Main.NewText(player.accFishingLine);
                 if (isBeingPushed && pusher != null) //if being pushed
                 {
                     //Vector2 pusherHand = pusher.player.Center + new Vector2(pusher.player.direction * 0f, 5f);
@@ -328,7 +419,7 @@ namespace MackWheelers.Content.Players
                                     //Main.NewText("velX = "+ player.velocity.X + "  and runaccel = "+ player.runAcceleration);
                                     KneecapSpeed();
                                     manualPushingTimer = manualPushingTimerBase;
-                                    player.controlLeft = false;
+                                    //player.controlLeft = false;
                                 }
                                 else if (player.controlRight)
                                 {
@@ -336,15 +427,25 @@ namespace MackWheelers.Content.Players
                                     //Main.NewText("velX = " + player.velocity.X + "  and runaccel = " + player.runAcceleration);
                                     KneecapSpeed();
                                     manualPushingTimer = manualPushingTimerBase;
+                                    //player.controlRight = false;
                                 }
 
                                 //bro magiluninessence straight up caps your speed at 6 with the wheelchair wtf, even though i let it go as high as 9
                                 //
                                 //             WHY
                                 //
+                                //alright this actually seems to happen with ice skates too which is making me guess
+                                //just having those accs on causes the base game to set your maxspeed and shit and
+                                //ive gotta do stuff in PostUpdateRunSpeeds
                             }
                         }
-                        player.runSlowdown = GetPlayerSlowdown(groundTile);
+                        else
+                        {
+                            //move normally I guess, I dont think I actually need to put anything here?
+                        }
+
+                        //player.runSlowdown *= DEFAULTwheelchairSlowdownValue;
+                        //player.runSlowdown = GetPlayerSlowdown(groundTile);
                         //Main.NewText(player.runSlowdown);
 
 
@@ -360,6 +461,14 @@ namespace MackWheelers.Content.Players
                 }
             }
         }
+
+        public float GetPlayerCharge()
+        {
+            //TODO: do charge
+            //return player.accFishingLine ? 10f : 0f;
+            return 0f;
+        }
+
         public void KneecapSpeed()
         {
             //Main.NewText(player.maxRunSpeed);
@@ -374,7 +483,7 @@ namespace MackWheelers.Content.Players
             }
             player.maxRunSpeed = relativeRunspeed;
         }
-        public int GetFloorTileID()
+        public int GetFloorTileID()     //TODO: cache the floor tile
         {
             int num = (int)((player.position.X + player.width / 2) / 16f);
             int num2 = (int)((player.position.Y + player.height) / 16f);
@@ -384,11 +493,26 @@ namespace MackWheelers.Content.Players
             }
             Tile? floorTile = Player.GetFloorTile(num, num2);
             int num3 = -1;
-            if (floorTile.HasValue)
+            if (floorTile.HasValue && !floorTile.Value.IsActuated)
             {
                 num3 = floorTile.Value.TileType;
             }
             return num3;
+        }
+        public SlopeType GetFloorTileSlope()    //TODO: cache the floor tile
+        {
+            int num = (int)((player.position.X + player.width / 2) / 16f);
+            int num2 = (int)((player.position.Y + player.height) / 16f);
+            if (player.gravDir == -1f)
+            {
+                num2 = (int)(player.position.Y - 0.1f) / 16;
+            }
+            Tile? floorTile = Player.GetFloorTile(num, num2);
+            if (floorTile.HasValue && !floorTile.Value.IsActuated)
+            {
+                return floorTile.Value.Slope;
+            }
+            return 0;
         }
 
         public float GetPlayerSlowdown()
@@ -396,27 +520,228 @@ namespace MackWheelers.Content.Players
             int id = GetFloorTileID();
             return GetPlayerSlowdown(id);
         }
-        public float GetPlayerSlowdown(int ID)
+        public float GetPlayerSlowdown(int ID)  //TODO: merge these 3 methods and return a tuple if needed
         {
-            float returner = DEFAULTwheelchairSlowdownValue;
+            float slowDownCoefficient = .45f;
+            //float returner = DEFAULTwheelchairSlowdownValue;
             if (ID != -1)
             {
+                Vector2 positionChange = player.oldPosition - player.position;
+                if (wheelAccSleds || (!wheelAccSkates && TileID.Sets.Conversion.Ice[ID]))
+                {
+                    //Main.NewText(player.gfxOffY + "   " + (player.oldPosition - player.position) + " </br> " + player.velocity);
+
+                    positionChange = player.oldPosition - player.position;
+                    if (positionChange.X == 0)
+                    {
+                        var temp = GetFloorTileSlope();
+                        //Main.NewText(temp);
+                        if (temp == SlopeType.SlopeDownLeft)
+                        {
+                            player.velocity += new Vector2(.35f, .01f);
+                        }
+                        else if (temp == SlopeType.SlopeDownRight)
+                        {
+                            player.velocity += new Vector2(-.35f, .01f); //no I dont know why this one needs to be .35 while .05 works for the other one
+                        }
+                    }
+                    if (positionChange.Y < 0f)
+                    {
+                        //Main.NewText(player.gfxOffY + "   " + (player.oldPosition.Y - player.position.Y));
+                        slowDownCoefficient *= -.5f;
+                    }
+                }
+
                 if (TileID.Sets.Falling[ID])
                 {
-                    returner *= 2f;
+                    if (wheelAccSleds)
+                    {
+                        if (positionChange.Y < 0f)
+                        {
+                            //Main.NewText(player.gfxOffY + "   " + (player.oldPosition.Y - player.position.Y));
+                            slowDownCoefficient *= 2f;
+                        }
+                    }
+                    if (!wheelAccCrawlers)
+                    {
+                        slowDownCoefficient *= 1.76f; //juuuuust right, lets you still move but basically immobilizes you
+                    }
                 }
                 else if (TileID.Sets.Conversion.Snow[ID])
                 {
-                    returner *= 2f;
+                    if (wheelAccSleds)
+                    {
+                        //Main.NewText(positionChange);
+                        if (positionChange.Y < 0f)
+                        {
+                            slowDownCoefficient *= 2.5f;
+                        }
+                        else if (positionChange.Y > 0f)
+                        {
+                            slowDownCoefficient *= 1f;
+                        }
+                        else
+                        {
+                            slowDownCoefficient *= .5f;
+                        }
+                    }
+                    else
+                    {
+                        if (!wheelAccCrawlers)
+                        {
+                            slowDownCoefficient *= 1.5f;
+                        }
+                    }
                 }
                 else if (ID == TileID.Mud || ID == TileID.Ash)
                 {
-                    returner *= 1.5f;
+                    if (!wheelAccCrawlers)
+                    {
+                        slowDownCoefficient *= 1.5f;
+                    }
                 }
                 else if (TileID.Sets.Conversion.Ice[ID])
                 {
-                    returner *= .09f;
+                    if (!wheelAccSkates) //wheelAccSleds || true
+                    {
+                        //Main.NewText(positionChange);
+                        if (positionChange.Y < 0f)
+                        {
+                            slowDownCoefficient *= 14.5f;
+                        }
+                        else if (positionChange.Y > 0f)
+                        {
+                            slowDownCoefficient *= 10f;
+                        }
+                        else
+                        {
+                            slowDownCoefficient *= .08f;
+                        }
+                    }
+                    else
+                    {
+                        slowDownCoefficient *= .7f;
+                    }
                 }
+                else if (ID == TileID.Asphalt)
+                {
+                    slowDownCoefficient *= .09f; //idk i think it works
+                }
+                else if (ID == TileID.FrozenSlimeBlock)
+                {
+                    if (wheelAccSleds)
+                    {
+                        //Main.NewText(positionChange);
+                        if (positionChange.Y < 0f)
+                        {
+                            slowDownCoefficient *= 14.5f;
+                        }
+                        else if (positionChange.Y > 0f)
+                        {
+                            slowDownCoefficient *= 10f;
+                        }
+                        else
+                        {
+                            slowDownCoefficient *= 0f;
+                        }
+                    }
+                    else
+                    {
+                        slowDownCoefficient *= 0f;
+                    }
+                }
+                //Main.NewText(returner);
+            }
+
+            return slowDownCoefficient;
+        }
+        public float GetPlayerMaxSpeed()
+        {
+            int id = GetFloorTileID();
+            return GetPlayerMaxSpeed(id);
+        }
+        public float GetPlayerMaxSpeed(int ID)
+        {
+            float returner = 1f;
+            if (ID != -1)
+            {
+                Vector2 positionChange = player.oldPosition - player.position;
+                if (wheelAccSleds)
+                {
+                    //Main.NewText(player.gfxOffY + "   " + (player.oldPosition - player.position) + " </br> " + player.velocity);
+
+                    /*
+                    if (positionChange.X == 0)
+                    {
+                        var temp = GetFloorTileSlope();
+                        //Main.NewText(temp);
+                        if (temp == SlopeType.SlopeDownLeft)
+                        {
+                            player.velocity += new Vector2(.05f, .01f);
+                        }
+                        else if (temp == SlopeType.SlopeDownRight)
+                        {
+                            player.velocity += new Vector2(-.05f, .01f);
+                        }
+                    }*/
+                    if (positionChange.Y > 0f)
+                    {
+                        //Main.NewText(player.gfxOffY + "   " + (player.oldPosition.Y - player.position.Y));
+                        returner *= .4f;
+                    }
+                }
+
+                if (TileID.Sets.Falling[ID])
+                {
+                    if (!wheelAccCrawlers)
+                    {
+                        returner *= (1f / 2f);
+                    }
+                }
+                else if (TileID.Sets.Conversion.Snow[ID])
+                {
+                    if (wheelAccSleds)
+                    {
+                        if ((player.oldPosition.Y - player.position.Y) < 0f)
+                        {
+                            returner *= (1f / .6f);
+                        }
+                    }
+                    else
+                    {
+                        if (!wheelAccCrawlers)
+                        {
+                            returner *= (1f / 1.5f);
+                        }
+                    }
+                }
+                else if (ID == TileID.Mud || ID == TileID.Ash)
+                {
+                    if (!wheelAccCrawlers)
+                    {
+                        returner *= (1f / 1.5f);
+                    }
+                }
+                else if (TileID.Sets.Conversion.Ice[ID])
+                {
+                    if (wheelAccSkates)
+                    {
+                        returner *= (1f / .86f);
+                    }
+                    else
+                    { 
+                        returner *= (1f / .6f);
+                    }
+                }
+                else if (ID == TileID.Asphalt)
+                {
+                    returner *= (1f / .5f);
+                }
+                else if (ID == TileID.FrozenSlimeBlock)
+                {
+                    returner *= 1f;
+                }
+                //Main.NewText(returner);
             }
 
             return returner;
@@ -429,26 +754,107 @@ namespace MackWheelers.Content.Players
         }
         public float GetPlayerAccelleration(int ID)
         {
-            float accellerationCoefficient = 1;
+            float returner = 1f;
             if (ID != -1)
             {
-                if (TileID.Sets.Conversion.Sand[ID] || TileID.Sets.Conversion.Snow[ID] || ID == TileID.Mud || ID == TileID.Ash)
+                if (TileID.Sets.Conversion.Sand[ID])
                 {
-                    accellerationCoefficient *= 1f; //if this is 1 it does nothing, otherwise 
+                    
+                    if (!wheelAccCrawlers)
+                    {
+                        //returner *= 1.04f;
+                        returner *= .94f;
+                        /*
+                         * 
+                        ok, I have no idea what the fuck I changed but all I know if that due to 
+                        fucking with the slowdown, and I guess making it work as it was supposed to?
+                        the accelleration 'penalty' has to actually be higher than normal due to the 
+                        slowdown doubly effecting it, 
+                        
+                        the before value with the broken? slowdown was .94,
+                        but now due to this change it is actually 1.04.... I dont know why
+
+                        */
+                    }
+
+                }
+                else if (TileID.Sets.Conversion.Snow[ID])
+                {
+                    if (wheelAccSleds)
+                    {
+                        if ((player.oldPosition.Y - player.position.Y) < 0f)
+                        {
+                            //Main.NewText(player.gfxOffY + "   " + (player.oldPosition.Y - player.position.Y));
+                            returner *= .8f;
+                        }
+                        else
+                        {
+                            if (wheelAccCrawlers)
+                            {
+                                returner *= .8f;
+                            }
+                            else
+                            {
+                                returner *= .7f;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (wheelAccCrawlers)
+                        {
+                            returner *= .96f;
+                        }
+                        else
+                        {
+                            returner *= .94f;
+                        }
+                    }
+                }
+                else if (ID == TileID.Mud || ID == TileID.Ash)
+                {
+                    if (!wheelAccCrawlers)
+                    {
+                        returner *= .94f;
+                    }
                 }
                 else if (TileID.Sets.Conversion.Ice[ID])
                 {
-                    accellerationCoefficient *= .35f;
+                    if (wheelAccSkates)
+                    {
+                        returner *= 1f;
+                    }
+                    else
+                    {
+                        returner *= .3f;
+                    }
                 }
+                else if (ID == TileID.Asphalt)
+                {
+                    returner *= 1.5f;
+                }
+                else if (ID == TileID.FrozenSlimeBlock)
+                {
+                    if (wheelAccSkates)
+                    {
+                        returner *= .8f;
+                    }
+                    else
+                    {
+                        returner *= .55f;
+                    }
+                }
+                //Main.NewText(returner);
             }
 
-            return accellerationCoefficient;
+            return returner;
         }
 
         public override void PostUpdate()
         {
+            //Main.NewText(player.gfxOffY + " PU");
             //Main.NewText("player y velocity 3: " + player.velocity.Y);
-            //Main.NewText("newline");
+            //Main.NewText(player.step);    //dont know what this variable does
             if (isBeingPushed && pusher != null)
             {
                 //so this stupid stopwatch works
@@ -469,11 +875,24 @@ namespace MackWheelers.Content.Players
 
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
-            if (player.HasBuff(WheelchairBuff))
+            if (player.mount.Active && isRidingWheelchair) 
             {
                 //drawInfo.drawPlayer.legFrame.Y = 336;
                 //drawInfo.isBottomOverriden= true;
                 drawInfo.isSitting = true;
+
+                if (wheelAccCrawlers)
+                {
+                    float offset = BaseWheelchairMount.WheelchairAccessoryVisualOffsets.getCrawlerOffset(player).Y;
+                    //float offset = BaseWheelchairMount.WheelchairAccessoryVisualOffsets.getCrawlerOffset(player).Y;
+                    drawInfo.isBottomOverriden = true;
+                    drawInfo.legsOffset.Y += offset;
+                    //drawInfo.seatYOffset += offset;
+                    //drawInfo.mountOffSet += offset; //does nothing??
+                    drawInfo.torsoOffset += offset;
+                    drawInfo.isSitting = true;
+                    drawInfo.ItemLocation.Y += offset;
+                }
             }
             if (isPushing)
             {
@@ -481,10 +900,6 @@ namespace MackWheelers.Content.Players
             }
             base.ModifyDrawInfo(ref drawInfo);
         }
-
-
-
-        //796 kilogram boulder
 
         public override void PostUpdateBuffs()
         {

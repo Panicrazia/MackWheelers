@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace MackWheelers.Content.Items.WheelchairAccessories
 {
-    internal class BaseWheelchairBoxAcc : BaseWheelchairAcc
+    internal abstract class BaseWheelchairBoxAcc : BaseWheelchairAcc
     {
 
         public override void SetDefaults()

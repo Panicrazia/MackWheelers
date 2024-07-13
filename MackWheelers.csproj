@@ -1,22 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\tModLoader.targets" />
   <PropertyGroup>
     <AssemblyName>MackWheelers</AssemblyName>
-    <TargetFramework>net6.0</TargetFramework>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Class1.txt" />
+    <None Remove="Content\Buffs\AdvancedWheelchairMountBuff.png" />
+    <None Remove="Content\Buffs\ElectricWheelchairMountBuff.png" />
     <None Remove="Content\Buffs\PermanentlyCrippledDebuff.png" />
     <None Remove="Content\Buffs\PermanentlyCrippledDebuffAlt.png" />
+    <None Remove="Content\Buffs\ReinforcedWheelchairMountBuff.png" />
+    <None Remove="Content\Buffs\WoodenWheelchairMountBuff.png" />
     <None Remove="Content\Items\a796KiloGramBoulder.png" />
     <None Remove="Content\Items\DebugMjolnir.png" />
     <None Remove="Content\Items\Mounts\ElectricWheelchairItem.png" />
+    <None Remove="Content\Items\WheelchairAccessories\DuneCrawlersItem.png" />
+    <None Remove="Content\Items\WheelchairAccessories\WheelAccessories\SnowSledsItem.png" />
     <None Remove="Content\Items\WheelchairWheelAcc.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
+    <None Remove="Content\Mounts\AdvancedWheelchairMount.png" />
+    <None Remove="Content\Mounts\AdvancedWheelchairMount_Back.png" />
+    <None Remove="Content\Mounts\AdvancedWheelchairMount_Front.png" />
+    <None Remove="Content\Mounts\DuneCrawlers_Back.png" />
+    <None Remove="Content\Mounts\DuneCrawlers_Front.png" />
+    <None Remove="Content\Mounts\ElectricWheelchairMount.png" />
+    <None Remove="Content\Mounts\ElectricWheelchairMount_Back.png" />
+    <None Remove="Content\Mounts\ElectricWheelchairMount_Front.png" />
+    <None Remove="Content\Mounts\ReinforcedWheelchairMount.png" />
+    <None Remove="Content\Mounts\ReinforcedWheelchairMount_Back.png" />
+    <None Remove="Content\Mounts\ReinforcedWheelchairMount_Front.png" />
+    <None Remove="Content\Mounts\SnowSledsBack.png" />
+    <None Remove="Content\Mounts\SnowSledsFront.png" />
   </ItemGroup>
 </Project>

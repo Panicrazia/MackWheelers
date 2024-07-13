@@ -27,8 +27,14 @@ namespace MackWheelers.Content.Items
 
         public override void AddRecipes()
         {
-            //TODO
-
+            CreateRecipe()
+                .AddIngredient(ItemID.WorkBench)
+                .AddIngredient(ItemID.Chain, 3)
+                //todo: this recipie might be not intuitive
+                //.AddIngredient(ModContent.ItemType<ExampleItem>(), 15)
+                .AddTile(TileID.Anvils)
+                //.AddTile(TileID.HeavyWorkBench)
+                .Register();
         }
     }
 

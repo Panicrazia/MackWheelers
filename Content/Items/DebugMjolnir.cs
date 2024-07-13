@@ -11,7 +11,7 @@ using MackWheelers.Content.Players;
 
 namespace MackWheelers.Content.Items
 {
-    internal class DebugMjolnir : ModItem
+    internal abstract class DebugMjolnir : ModItem
     {
         public override void SetDefaults()
         {

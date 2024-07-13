@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria;
 using Terraria.ModLoader;
 using MackWheelers.Content.Items.WheelchairAccessories;
+using MackWheelers.Content.Players;
 
 namespace MackWheelers
 {

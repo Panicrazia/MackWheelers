@@ -14,11 +14,13 @@ using Terraria.GameContent;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static Mono.CompilerServices.SymbolWriter.CodeBlockEntry;
 using MackWheelers.Content.Players;
+using ReLogic.Content;
 
 namespace MackWheelers.Content.Mounts
 {
     public class BaseWheelchairMount : ModMount
     {
+        private object wheelchairPlayer;
 
 
 
@@ -43,7 +45,7 @@ namespace MackWheelers.Content.Mounts
         {
             
             MountData.jumpHeight = 0; // How high the mount can jump.
-            MountData.acceleration = 0.1f; // The rate at which the mount speeds up.
+            MountData.acceleration = 0.19f; // The rate at which the mount speeds up.
             MountData.jumpSpeed = 0f; // The rate at which the player and mount ascend towards (negative y velocity) the jump height when the jump button is pressed.
             MountData.blockExtraJumps = true; // Determines whether or not you can use a double jump (like cloud in a bottle) while in the mount.
             MountData.constantJump = false; // Allows you to hold the jump button down.
@@ -60,7 +62,7 @@ namespace MackWheelers.Content.Mounts
 
             // Misc
             MountData.fatigueMax = 0;
-            MountData.buff = ModContent.BuffType<Buffs.WheelchairMountBuff>(); // The ID number of the buff assigned to the mount.
+            MountData.buff = ModContent.BuffType<Buffs.BaseWheelchairMountBuff>(); // The ID number of the buff assigned to the mount.
 
             // Effects
             MountData.spawnDust = DustID.Iron; // The ID of the dust spawned when mounted or dismounted.
@@ -106,41 +108,14 @@ namespace MackWheelers.Content.Mounts
                 MountData.textureWidth = MountData.backTexture.Width();
                 MountData.textureHeight = MountData.backTexture.Height();
             }
-            
         }
-
-        
 
         public override void AimAbility(Player player, Vector2 mousePosition)
         {
-            for (int i = 0; i < 69; i++)
-            {
-                Rectangle rect = player.getRect();
-                Dust.NewDust(new Vector2(rect.X, rect.Y), rect.Width, rect.Height, DustID.Torch);
-            }
-
-            //Rectangle rect = player.getRect();
-            //Dust.NewDust(new Vector2(rect.X, rect.Y), rect.Width, rect.Height, DustID.Torch);
-
-            //MountData.Minecart = true;
-            //MountData.bodyFrame++;
-            //Console.WriteLine(MountData.bodyFrame);
         }
 
         public override void UseAbility(Player player, Vector2 mousePosition, bool toggleOn)
         {
-            if(toggleOn)
-            {
-                Rectangle rect = player.getRect();
-                for (int i = 0; i < 69; i++)
-                {
-                    Dust.NewDust(new Vector2(rect.X, rect.Y), rect.Width, rect.Height, DustID.Torch);
-                }
-            }
-            
-            //MountData.Minecart = true;
-            //MountData.bodyFrame++;
-            //Console.WriteLine(MountData.bodyFrame);
         }
 
         public override bool UpdateFrame(Player mountedPlayer, int state, Vector2 velocity)
@@ -155,40 +130,6 @@ namespace MackWheelers.Content.Mounts
 
         public override void UpdateEffects(Player player)
         {
-
-            //player.legFrameCounter = 2.0;
-            //player.legFrame.Y = 336;
-            /*
-            PlayerSittingHelper sittingHelper = new PlayerSittingHelper();
-            sittingHelper.isSitting = true;
-            player.sitting = sittingHelper;
-            */
-            //player.legRotation = 45f;
-            
-
-            // This code simulates some wind resistance for the balloons.
-            /*
-            var balloons = (CarSpecificData)player.mount._mountSpecificData;
-            float balloonMovementScale = 0.05f;
-
-            for (int i = 0; i < balloons.count; i++)
-            {
-                ref float rotation = ref balloons.rotations[i]; // This is a reference variable. It's set to point directly to the 'i' index in the rotations array, so it works like an alias here.
-
-                if (Math.Abs(rotation) > MathHelper.PiOver2)
-                    balloonMovementScale *= -1;
-
-                rotation += -player.velocity.X * balloonMovementScale * Main.rand.NextFloat();
-                rotation = rotation.AngleLerp(0, 0.05f);
-            }
-
-            // This code spawns some dust if we are moving fast enough.
-            if (Math.Abs(player.velocity.X) > 4f)
-            {
-                Rectangle rect = player.getRect();
-
-                //Dust.NewDust(new Vector2(rect.X, rect.Y), rect.Width, rect.Height, ModContent.DustType<Dusts.Sparkle>());
-            }*/
         }
 
         
@@ -226,6 +167,235 @@ namespace MackWheelers.Content.Mounts
                     //Main.dust[num2].scale += (float)Main.rand.Next(-10, 21) * 0.01f;
                 }
             }
+        }
+
+        public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
+        {
+            /* //some base terraria mount draw code
+            if (playerDrawData == null)
+            {
+                return;
+            }
+            //Texture2D texture2D2;
+            //Texture2D texture2D;
+            switch (drawType)
+            {
+                case 0:
+                    texture2D = this._data.backTexture.Value;
+                    texture2D2 = this._data.backTextureGlow.Value;
+                    break;
+                case 1:
+                    texture2D = this._data.backTextureExtra.Value;
+                    texture2D2 = this._data.backTextureExtraGlow.Value;
+                    break;
+                case 2:
+                    if (this._type == 0 && this._idleTime >= this._idleTimeNext)
+                    {
+                        return;
+                    }
+                    texture2D = this._data.frontTexture.Value;
+                    texture2D2 = this._data.frontTextureGlow.Value;
+                    break;
+                case 3:
+                    texture2D = this._data.frontTextureExtra.Value;
+                    texture2D2 = this._data.frontTextureExtraGlow.Value;
+                    break;
+                default:
+                    texture2D = null;
+                    texture2D2 = null;
+                    break;
+            }
+            int type = this._type;
+            if (type == 50 && texture2D != null && texture2D != Asset<Texture2D>.DefaultValue)
+            {
+                PlayerQueenSlimeMountTextureContent queenSlimeMount = TextureAssets.RenderTargets.QueenSlimeMount;
+                queenSlimeMount.Request();
+                if (queenSlimeMount.IsReady)
+                {
+                    texture2D = queenSlimeMount.GetTarget();
+                }
+            }
+            if (texture2D == null)
+            {
+                return;
+            }
+            type = this._type;
+            if ((type == 0 || type == 9) && drawType == 3 && shadow != 0f)
+            {
+                return;
+            }
+            int num = this.XOffset;
+            int num6 = this.YOffset + this.PlayerOffset;
+            if (drawPlayer.direction <= 0 && (!this.Cart || !this.Directional))
+            {
+                num *= -1;
+            }
+            Position.X = (int)(Position.X - Main.screenPosition.X + (float)(drawPlayer.width / 2) + (float)num);
+            Position.Y = (int)(Position.Y - Main.screenPosition.Y + (float)(drawPlayer.height / 2) + (float)num6);
+            int num7 = 0;
+            bool flag = true;
+            int num8 = this._data.totalFrames;
+            int num9 = this._data.textureHeight;
+            int num11 = num9 / num8;
+            
+            if (flag)
+            {
+                value.Height -= 2;
+            }
+            if (MountID.Sets.FacePlayersVelocity[this._type])
+            {
+                spriteEffects = ((Math.Sign(drawPlayer.velocity.X) == -drawPlayer.direction) ? (playerEffect ^ SpriteEffects.FlipHorizontally) : playerEffect);
+            }
+            if (MountLoader.Draw(this, playerDrawData, drawType, drawPlayer, ref texture2D, ref texture2D2, ref Position, ref value, ref drawColor, ref color, ref num13, ref spriteEffects, ref origin, ref scale, shadow))
+            {
+                DrawData item6 = new DrawData(texture2D, Position, value, drawColor, num13, origin, scale, spriteEffects);
+                item6.shader = Mount.currentShader;
+                playerDrawData.Add(item6);
+                if (texture2D2 != null)
+                {
+                    item6 = new DrawData(texture2D2, Position, value, color * ((float)(int)drawColor.A / 255f), num13, origin, scale, spriteEffects);
+                    item6.shader = Mount.currentShader;
+                }
+                playerDrawData.Add(item6);
+            }
+            */
+
+            //Texture2D texture = ModContent.Request<Texture2D>("YourModName/Items/MyItem_Glowmask", AssetRequestMode.ImmediateLoad).Value;
+            /*
+            spriteBatch.Draw
+            (
+                texture,
+                new Vector2
+                (
+                    item.position.X - Main.screenPosition.X + item.width * 0.5f,
+                    item.position.Y - Main.screenPosition.Y + item.height - texture.Height * 0.5f + 2f
+                ),
+                new Rectangle(0, 0, texture.Width, texture.Height),
+                Color.White,
+                rotation,
+                texture.Size() * 0.5f,
+                scale,
+                SpriteEffects.None,
+                0f
+            );*/
+            /*
+            Texture2D texture2D;
+            Rectangle rect;
+            DrawData drawThing;
+            int frameHeight;
+            */
+            WheelchairPlayer wheelchairPlayer = drawPlayer.GetModPlayer<WheelchairPlayer>();
+            Vector2 totalOffset = GetTotalOffset(wheelchairPlayer);
+            //Main.NewText(totalOffset);
+            //breakdown of the offset numbers, the -30 is from the difference between the space on the left and the space on the right of a wheelchair part
+            //the -22 is the distance between the empty space on the left of the part, combined with the distance of the part graphics that arent covered by the chair
+
+            //Rectangle value = new Rectangle(0, num11 * num7, this._data.textureWidth, num11);
+
+
+            switch (drawType)
+            {
+                case 0:
+                    if (wheelchairPlayer.wheelAccCrawlers)
+                    {
+                        DrawCrawlers(true, playerDrawData, drawPlayer, totalOffset, drawPosition, drawColor, rotation, drawOrigin, drawScale, spriteEffects);
+                    }
+                    if (wheelchairPlayer.wheelAccSleds)
+                    {
+                        DrawSleds(true, playerDrawData, drawPlayer, totalOffset, drawPosition, drawColor, rotation, drawOrigin, drawScale, spriteEffects);
+                    }
+                    drawOrigin.Y -= totalOffset.Y;
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    if (wheelchairPlayer.wheelAccSleds)
+                    {
+                        DrawSleds(false, playerDrawData, drawPlayer, totalOffset, drawPosition, drawColor, rotation, drawOrigin, drawScale, spriteEffects);
+                    }
+                    if (wheelchairPlayer.wheelAccCrawlers)
+                    {
+                        DrawCrawlers(false, playerDrawData, drawPlayer, totalOffset, drawPosition, drawColor, rotation, drawOrigin, drawScale, spriteEffects);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            //Main.NewText(drawType + ": " + drawOrigin + " " + totalOffset);
+            //drawThing.shader = Mount.currentShader;
+            //playerDrawData.Add(drawThing);
+
+            return base.Draw(playerDrawData, drawType, drawPlayer, ref texture, ref glowTexture, ref drawPosition, ref frame, ref drawColor, ref glowColor, ref rotation, ref spriteEffects, ref drawOrigin, ref drawScale, shadow);
+        }
+
+        public void DrawCrawlers(bool back, List<DrawData> playerDrawData, Player player, Vector2 totalOffset, Vector2 drawPosition, Color drawColor, float rotation, Vector2 drawOrigin, float drawScale, SpriteEffects spriteEffects)
+        {
+            Vector2 offset = WheelchairAccessoryVisualOffsets.getCrawlerOffset(player);
+            Texture2D texture2D = ModContent.Request<Texture2D>("MackWheelers/Content/Items/WheelchairAccessories/WheelAccessories/DuneCrawlers"+(back? "_Back": "_Front"), AssetRequestMode.ImmediateLoad).Value;
+            int frameHeight = texture2D.Height / MountData.totalFrames;
+            //Main.NewText(texture2D.Height);
+            Rectangle rect = new Rectangle(0, (frameHeight * player.mount._frame), texture2D.Width, frameHeight);
+            DrawData drawThing = new DrawData(texture2D, drawPosition, rect, drawColor, rotation, (drawOrigin - offset + (back ? Vector2.Zero : totalOffset)), drawScale, spriteEffects);
+            drawThing.shader = Mount.currentShader;
+            playerDrawData.Add(drawThing);
+        }
+
+        public void DrawSleds(bool back, List<DrawData> playerDrawData, Player player, Vector2 totalOffset, Vector2 drawPosition, Color drawColor, float rotation, Vector2 drawOrigin, float drawScale, SpriteEffects spriteEffects)
+        {
+            Vector2 offset = WheelchairAccessoryVisualOffsets.getSledOffset(player);
+            Texture2D texture2D = ModContent.Request<Texture2D>("MackWheelers/Content/Items/WheelchairAccessories/WheelAccessories/SnowSleds" + (back ? "_Back" : "_Front"), AssetRequestMode.ImmediateLoad).Value;
+            int frameHeight = texture2D.Height / MountData.totalFrames;
+            //Main.NewText(texture2D.Height);
+            Rectangle rect = new Rectangle(0, (frameHeight * player.mount._frame), texture2D.Width, frameHeight);
+            DrawData drawThing = new DrawData(texture2D, drawPosition, rect, drawColor, rotation, (drawOrigin - offset + (back ? Vector2.Zero : totalOffset)), drawScale, spriteEffects);
+            drawThing.shader = Mount.currentShader;
+            playerDrawData.Add(drawThing);
+        }
+
+        /// <summary>
+        /// returns the offset that the entire wheelchair will be raised by
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public Vector2 GetTotalOffset(WheelchairPlayer player)
+        {
+            float maxOffset = 0f;
+            float temp;
+            if (player.wheelAccCrawlers)
+            {
+                temp = WheelchairAccessoryVisualOffsets.getCrawlerOffset(player.player).Y;
+                if(temp < maxOffset)
+                {
+                    maxOffset = temp;
+                }
+            }
+            return new Vector2(0f, maxOffset);
+        }
+
+        public static class WheelchairAccessoryVisualOffsets
+        {
+            public static Vector2 getCrawlerOffset(Player player)
+            {
+                return new Vector2((-22f + (player.direction == -1 ? -30f : 0f)), -2f);
+            }
+            public static Vector2 getSledOffset(Player player)
+            {
+                return new Vector2((-22f + (player.direction == -1 ? -30f : 0f)), 0f);
+                //return new Vector2(getCrawlerOffsetX(player), getCrawlerOffsetY());
+            }
+            /*
+            public static float getCrawlerOffsetX(Player player)
+            {
+                return (-22f + (player.direction == -1 ? -30f : 0f));
+            }
+            public static float getCrawlerOffsetY()
+            {
+                return -2f;
+            }
+            */
         }
     }
 }

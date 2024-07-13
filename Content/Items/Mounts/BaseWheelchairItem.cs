@@ -62,7 +62,7 @@ namespace MackWheelers.Content.Items.Mounts
         }
     }
     */
-    internal abstract class BaseWheelchairItem : ModItem
+    internal class BaseWheelchairItem : ModItem
     {
         //public WheelchairAccData wheelchairAccData = new WheelchairAccData();
 
@@ -95,6 +95,11 @@ namespace MackWheelers.Content.Items.Mounts
             wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Undercarriage, new List<Item>());
             wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Back, new List<Item>());
             wheelchairAccessoryList.Add(WheelchairAccessoryTypeEnum.Engine, new List<Item>());
+        }
+
+        public Dictionary<WheelchairAccessoryTypeEnum, List<Item>> GetWheelchairAccessoryList()
+        {
+            return wheelchairAccessoryList;
         }
 
         /*
@@ -288,7 +293,6 @@ namespace MackWheelers.Content.Items.Mounts
         // Please see Content/ExampleRecipes.cs for a detailed explanation of recipe creation.
         public override void AddRecipes()
         {
-
         }
     }
 }

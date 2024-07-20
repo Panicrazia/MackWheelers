@@ -93,27 +93,27 @@ Items: {
 
 	PrehmWheelGrapple1: {
 		DisplayName: Prehm Wheel Grapple1
-		Tooltip: "Basic Wheelchair Grapple"
+		Tooltip: Basic Wheelchair Grapple
 	}
 
 	PrehmWheelGrapple1Item: {
 		DisplayName: Prehm Wheel Grapple1 Item
-		Tooltip: "Basic Wheelchair Grapple"
+		Tooltip: Basic Wheelchair Grapple
 	}
 
 	DuneCrawlersItem: {
 		DisplayName: Dune Crawlers Item
-		Tooltip: "Dune Crawlers"
+		Tooltip: Dune Crawlers Wheelchair Addon
 	}
 
 	SnowSledsItem: {
 		DisplayName: Snow Sleds Item
-		Tooltip: "Snow Sleds"
+		Tooltip: Snow Sleds Wheelchair Addon
 	}
 
 	IceSkatesItem: {
 		DisplayName: Ice Skates Item
-		Tooltip: "Ice Skates"
+		Tooltip: Update test
 	}
 }
 
@@ -131,6 +131,26 @@ Buffs: {
 	BaseWheelchairMountBuff: {
 		DisplayName: Base Wheelchair Mount Buff
 		Description: Mods.MackWheelers.Buffs.BaseWheelchairMountBuff.Description
+	}
+
+	AdvancedWheelchairMountBuff: {
+		DisplayName: Advanced Wheelchair Mount Buff
+		Description: Mods.MackWheelers.Buffs.AdvancedWheelchairMountBuff.Description
+	}
+
+	ElectricWheelchairMountBuff: {
+		DisplayName: Electric Wheelchair Mount Buff
+		Description: Mods.MackWheelers.Buffs.ElectricWheelchairMountBuff.Description
+	}
+
+	ReinforcedWheelchairMountBuff: {
+		DisplayName: Reinforced Wheelchair Mount Buff
+		Description: Mods.MackWheelers.Buffs.ReinforcedWheelchairMountBuff.Description
+	}
+
+	WoodenWheelchairMountBuff: {
+		DisplayName: Wooden Wheelchair Mount Buff
+		Description: Mods.MackWheelers.Buffs.WoodenWheelchairMountBuff.Description
 	}
 }
 

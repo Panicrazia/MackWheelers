@@ -8,7 +8,7 @@ using Terraria;
 
 namespace MackWheelers.Content.Buffs
 {
-    public abstract class AdvancedWheelchairMountBuff : ModBuff
+    public class AdvancedWheelchairMountBuff : ModBuff
     {
         public override void SetStaticDefaults()
         {

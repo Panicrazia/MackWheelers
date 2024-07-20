@@ -6,6 +6,7 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="changelog.txt" />
     <None Remove="Class1.txt" />
     <None Remove="Content\Buffs\AdvancedWheelchairMountBuff.png" />
     <None Remove="Content\Buffs\ElectricWheelchairMountBuff.png" />

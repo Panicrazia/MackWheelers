@@ -15,11 +15,14 @@ using Microsoft.Xna.Framework.Graphics.PackedVector;
 using static Mono.CompilerServices.SymbolWriter.CodeBlockEntry;
 using MackWheelers.Content.Players;
 using ReLogic.Content;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace MackWheelers.Content.Mounts
 {
     public class BaseWheelchairMount : ModMount
     {
+        //Making this abstract breaks everything for some reason, so thats why its not abstract, if someone knows why it does this then id like to know
+
         private object wheelchairPlayer;
 
 

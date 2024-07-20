@@ -62,6 +62,7 @@ namespace MackWheelers.Content.Items.Mounts
         }
     }
     */
+    
     internal class BaseWheelchairItem : ModItem
     {
         //public WheelchairAccData wheelchairAccData = new WheelchairAccData();

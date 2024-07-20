@@ -48,6 +48,8 @@ namespace MackWheelers
                         WheelchairPlayer wheeliePlayer = Main.player[playerNumber].GetModPlayer<WheelchairPlayer>();
                         wheeliePlayer.ReceiveDefaultSyncPacket(reader, whoAmI);
 
+                        //Main.NewText("got thing");
+
                         if (Main.netMode == NetmodeID.Server)
                         {
                             // Forward the changes to the other clients

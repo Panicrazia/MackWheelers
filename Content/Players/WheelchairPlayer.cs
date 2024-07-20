@@ -246,10 +246,11 @@ namespace MackWheelers.Content.Players
                     //still gets called, which means I dont actually need a dedicated keybind?
                     //the wheelchair things needs a fire once thing or needs an internal cooldown or something idk
                 }
+                
                 /*
                 if (KeybindSystem.WheelchairGrappleKeybind.JustPressed)
                 {
-                    //Main.NewText("uep cheif");
+                    Main.NewText("uep cheif");
                 }
                 */
 
@@ -361,6 +362,8 @@ namespace MackWheelers.Content.Players
             }
             if (player.mount.Active && isRidingWheelchair)
             {
+                //player.forceMerman = true;
+                
                 /* //testing jumps
                 player.mount._data.jumpHeight = 5;
                 player.mount._data.jumpSpeed = 5f;
@@ -378,7 +381,6 @@ namespace MackWheelers.Content.Players
 
                     player.gfxOffY = pusher.player.gfxOffY;
 
-                    //player.forceMerman = true;
 
                     //player.position = pusher.player.position;
                     player.position = pusher.player.position - pusher.player.velocity;
